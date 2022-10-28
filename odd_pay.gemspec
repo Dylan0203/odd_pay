@@ -22,4 +22,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "rails", "~> 6.1.7"
   spec.add_dependency "money-rails"
+  spec.add_dependency "aasm"
 end

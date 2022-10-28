@@ -5,6 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gemspec
 
 gem 'money-rails'
+gem 'aasm'
 
 group :development do
   gem 'sqlite3'
