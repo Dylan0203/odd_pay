@@ -4,6 +4,7 @@ PATH
     odd_pay (0.1.0)
       aasm
       money-rails
+      pg
       rails (~> 6.1.7)
 
 GEM
@@ -109,6 +110,7 @@ GEM
     nio4r (2.5.8)
     nokogiri (1.13.8-arm64-darwin)
       racc (~> 1.4)
+    pg (1.1.4)
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -173,7 +175,6 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    sqlite3 (1.5.3-arm64-darwin)
     thor (1.2.1)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
@@ -191,10 +192,10 @@ DEPENDENCIES
   factory_bot_rails
   money-rails
   odd_pay!
+  pg
   pry-remote
   rspec-rails
   shoulda-matchers (~> 5.0)
-  sqlite3
 
 BUNDLED WITH
    2.3.19

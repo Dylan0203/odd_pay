@@ -6,9 +6,9 @@ gemspec
 
 gem 'money-rails'
 gem 'aasm'
+gem 'pg'
 
 group :development do
-  gem 'sqlite3'
   gem 'annotate'
 end
 
