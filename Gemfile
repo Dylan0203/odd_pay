@@ -19,6 +19,7 @@ end
 group :development, :test do
   gem 'rspec-rails'
   gem 'factory_bot_rails'
+  gem 'pry-remote'
 end
 
 # To use a debugger
