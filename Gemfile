@@ -8,5 +8,9 @@ group :development do
   gem 'sqlite3'
 end
 
+group :development, :test do
+  gem 'rspec-rails'
+end
+
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
