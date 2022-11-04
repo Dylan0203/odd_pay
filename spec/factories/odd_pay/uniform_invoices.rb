@@ -23,6 +23,6 @@
 #
 FactoryBot.define do
   factory :uniform_invoice, class: 'OddPay::UniformInvoice' do
-
+    payment
   end
 end

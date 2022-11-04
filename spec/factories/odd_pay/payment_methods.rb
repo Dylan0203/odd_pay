@@ -13,6 +13,6 @@
 #
 FactoryBot.define do
   factory :payment_method, class: 'OddPay::PaymentMethod' do
-
+    payment_gateway
   end
 end

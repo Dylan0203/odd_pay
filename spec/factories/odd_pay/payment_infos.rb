@@ -15,6 +15,7 @@
 #
 FactoryBot.define do
   factory :payment_info, class: 'OddPay::PaymentInfo' do
-
+    invoice
+    payment_method
   end
 end

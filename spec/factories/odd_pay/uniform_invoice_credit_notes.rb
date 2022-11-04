@@ -15,6 +15,6 @@
 #
 FactoryBot.define do
   factory :uniform_invoice_credit_note, class: 'OddPay::UniformInvoiceCreditNote' do
-
+    uniform_invoice
   end
 end

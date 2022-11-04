@@ -24,5 +24,10 @@
 #
 module OddPay
   class Invoice < ApplicationRecord
+    belongs_to :buyer, polymorphic: true, touch: true, optional: true
+    belongs_to :buyable, polymorphic: true, touch: true, optional: true
+    has_many :payment_infos
+    has_many :notifications, through: :payment_infos
+    has_many :payments, through: :payment_infos
   end
 end

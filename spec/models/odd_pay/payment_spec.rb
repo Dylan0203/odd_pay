@@ -15,6 +15,8 @@ require 'rails_helper'
 
 module OddPay
   RSpec.describe Payment, type: :model do
-    pending "add some examples to (or delete) #{__FILE__}"
+    # associations
+    it { should belong_to(:payment_info) }
+    it { should have_one(:uniform_invoice) }
   end
 end

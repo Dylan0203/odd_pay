@@ -13,5 +13,6 @@
 #
 module OddPay
   class PaymentMethod < ApplicationRecord
+    belongs_to :payment_gateway, touch: true
   end
 end

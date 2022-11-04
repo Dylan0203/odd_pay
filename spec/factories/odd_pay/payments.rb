@@ -13,6 +13,6 @@
 #
 FactoryBot.define do
   factory :payment, class: 'OddPay::Payment' do
-
+    payment_info
   end
 end

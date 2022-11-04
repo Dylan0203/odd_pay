@@ -15,5 +15,6 @@
 #
 module OddPay
   class UniformInvoiceCreditNote < ApplicationRecord
+    belongs_to :uniform_invoice
   end
 end

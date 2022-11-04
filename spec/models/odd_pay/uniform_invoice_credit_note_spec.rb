@@ -17,6 +17,7 @@ require 'rails_helper'
 
 module OddPay
   RSpec.describe UniformInvoiceCreditNote, type: :model do
-    pending "add some examples to (or delete) #{__FILE__}"
+    # associations
+    it { should belong_to(:uniform_invoice) }
   end
 end

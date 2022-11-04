@@ -24,6 +24,7 @@
 module OddPay
   class UniformInvoice < ApplicationRecord
     belongs_to :payment
+    belongs_to :uniform_invoice_gateway
     has_many :credit_notes, class_name: 'UniformInvoiceCreditNote'
   end
 end

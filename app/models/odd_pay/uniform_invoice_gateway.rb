@@ -14,5 +14,6 @@
 #
 module OddPay
   class UniformInvoiceGateway < ApplicationRecord
+    has_many :uniform_invoices
   end
 end

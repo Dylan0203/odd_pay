@@ -14,6 +14,7 @@ require 'rails_helper'
 
 module OddPay
   RSpec.describe PaymentGateway, type: :model do
-    pending "add some examples to (or delete) #{__FILE__}"
+    # associations
+    it { should have_many(:payment_methods) }
   end
 end

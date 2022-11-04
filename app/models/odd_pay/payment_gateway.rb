@@ -12,5 +12,6 @@
 #
 module OddPay
   class PaymentGateway < ApplicationRecord
+    has_many :payment_methods
   end
 end

@@ -15,5 +15,9 @@
 #
 module OddPay
   class PaymentInfo < ApplicationRecord
+    belongs_to :invoice, touch: true
+    belongs_to :payment_method
+    has_many :notifications
+    has_many :payments
   end
 end

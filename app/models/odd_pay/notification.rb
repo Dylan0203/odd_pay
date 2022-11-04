@@ -12,5 +12,6 @@
 #
 module OddPay
   class Notification < ApplicationRecord
+    belongs_to :payment_info, optional: true
   end
 end

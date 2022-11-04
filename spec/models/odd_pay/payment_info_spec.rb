@@ -17,6 +17,10 @@ require 'rails_helper'
 
 module OddPay
   RSpec.describe PaymentInfo, type: :model do
-    pending "add some examples to (or delete) #{__FILE__}"
+    # associations
+    it { should belong_to(:invoice) }
+    it { should belong_to(:payment_method) }
+    it { should have_many(:notifications) }
+    it { should have_many(:payments) }
   end
 end

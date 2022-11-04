@@ -13,5 +13,7 @@
 #
 module OddPay
   class Payment < ApplicationRecord
+    belongs_to :payment_info, touch: true
+    has_one :uniform_invoice
   end
 end

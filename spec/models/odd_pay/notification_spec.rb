@@ -14,6 +14,7 @@ require 'rails_helper'
 
 module OddPay
   RSpec.describe Notification, type: :model do
-    pending "add some examples to (or delete) #{__FILE__}"
+    # associations
+    it { should belong_to(:payment_info) }
   end
 end

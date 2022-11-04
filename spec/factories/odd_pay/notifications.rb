@@ -12,6 +12,6 @@
 #
 FactoryBot.define do
   factory :notification, class: 'OddPay::Notification' do
-
+    payment_info
   end
 end
