@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_04_055659) do
+ActiveRecord::Schema.define(version: 2022_11_04_055700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -91,6 +91,17 @@ ActiveRecord::Schema.define(version: 2022_11_04_055659) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["payment_info_id"], name: "index_odd_pay_payments_on_payment_info_id"
+  end
+
+  create_table "odd_pay_uniform_invoice_gateways", force: :cascade do |t|
+    t.string "name"
+    t.string "gateway_provider"
+    t.boolean "is_default", default: false
+    t.boolean "is_enabled", default: false
+    t.jsonb "gateway_info", default: {}
+    t.jsonb "historical_gateway_info", default: []
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   add_foreign_key "odd_pay_notifications", "odd_pay_payment_infos", column: "payment_info_id"
