@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_04_055700) do
+ActiveRecord::Schema.define(version: 2022_11_04_055920) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,9 +104,33 @@ ActiveRecord::Schema.define(version: 2022_11_04_055700) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "odd_pay_uniform_invoices", force: :cascade do |t|
+    t.bigint "payment_id"
+    t.bigint "uniform_invoice_gateway_id"
+    t.string "invoice_trans_no"
+    t.integer "total_amount_cents", default: 0, null: false
+    t.string "total_amount_currency", default: "USD", null: false
+    t.string "invoice_number"
+    t.string "random_number"
+    t.string "bar_code"
+    t.string "qr_code_l"
+    t.string "qr_code_r"
+    t.datetime "create_time"
+    t.string "status_message"
+    t.string "aasm_state"
+    t.text "comment"
+    t.jsonb "raw_data"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["payment_id"], name: "index_odd_pay_uniform_invoices_on_payment_id"
+    t.index ["uniform_invoice_gateway_id"], name: "index_odd_pay_uniform_invoices_on_uniform_invoice_gateway_id"
+  end
+
   add_foreign_key "odd_pay_notifications", "odd_pay_payment_infos", column: "payment_info_id"
   add_foreign_key "odd_pay_payment_infos", "odd_pay_invoices", column: "invoice_id"
   add_foreign_key "odd_pay_payment_infos", "odd_pay_payment_methods", column: "payment_method_id"
   add_foreign_key "odd_pay_payment_methods", "odd_pay_payment_gateways", column: "payment_gateway_id"
   add_foreign_key "odd_pay_payments", "odd_pay_payment_infos", column: "payment_info_id"
+  add_foreign_key "odd_pay_uniform_invoices", "odd_pay_payments", column: "payment_id"
+  add_foreign_key "odd_pay_uniform_invoices", "odd_pay_uniform_invoice_gateways", column: "uniform_invoice_gateway_id"
 end
