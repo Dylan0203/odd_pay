@@ -10,6 +10,7 @@ gem 'pg'
 
 group :development do
   gem 'annotate'
+  gem 'rails-erd', '> 1.6.1'
 end
 
 group :test do
