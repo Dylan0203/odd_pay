@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_04_055920) do
+ActiveRecord::Schema.define(version: 2022_11_04_060530) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,6 +93,19 @@ ActiveRecord::Schema.define(version: 2022_11_04_055920) do
     t.index ["payment_info_id"], name: "index_odd_pay_payments_on_payment_info_id"
   end
 
+  create_table "odd_pay_uniform_invoice_credit_notes", force: :cascade do |t|
+    t.bigint "uniform_invoice_id"
+    t.string "number"
+    t.string "invoice_number"
+    t.datetime "create_time"
+    t.integer "remain_amount_cents", default: 0, null: false
+    t.string "remain_amount_currency", default: "USD", null: false
+    t.jsonb "raw_data"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["uniform_invoice_id"], name: "index_op_uniform_invoice_credit_notes_on_uniform_invoice_id"
+  end
+
   create_table "odd_pay_uniform_invoice_gateways", force: :cascade do |t|
     t.string "name"
     t.string "gateway_provider"
@@ -131,6 +144,7 @@ ActiveRecord::Schema.define(version: 2022_11_04_055920) do
   add_foreign_key "odd_pay_payment_infos", "odd_pay_payment_methods", column: "payment_method_id"
   add_foreign_key "odd_pay_payment_methods", "odd_pay_payment_gateways", column: "payment_gateway_id"
   add_foreign_key "odd_pay_payments", "odd_pay_payment_infos", column: "payment_info_id"
+  add_foreign_key "odd_pay_uniform_invoice_credit_notes", "odd_pay_uniform_invoices", column: "uniform_invoice_id"
   add_foreign_key "odd_pay_uniform_invoices", "odd_pay_payments", column: "payment_id"
   add_foreign_key "odd_pay_uniform_invoices", "odd_pay_uniform_invoice_gateways", column: "uniform_invoice_gateway_id"
 end
