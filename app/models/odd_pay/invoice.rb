@@ -24,10 +24,31 @@
 #
 module OddPay
   class Invoice < ApplicationRecord
+    include AASM
+
     belongs_to :buyer, polymorphic: true, touch: true, optional: true
     belongs_to :buyable, polymorphic: true, touch: true, optional: true
     has_many :payment_infos
     has_many :notifications, through: :payment_infos
     has_many :payments, through: :payment_infos
+
+    aasm do
+      state :checkout, initial: true
+      state :paid
+      state :overdue
+      state :canceled
+
+      event :pay do
+        transitions from: %i(checkout paid overdue), to: :paid
+      end
+
+      event :expire do
+        transitions from: %i(paid), to: :overdue
+      end
+
+      event :cancel do
+        transitions from: %i(processing paid), to: :canceled
+      end
+    end
   end
 end
