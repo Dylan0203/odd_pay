@@ -22,6 +22,16 @@ module OddPay
     has_many :notifications
     has_many :payments
 
+    scope :expired, lambda {
+      paid.
+        where(
+          '? >= (SELECT MAX(ended_at) FROM odd_pay_payments WHERE payment_info_id = odd_pay_payment_infos.id)',
+          Time.current
+        )
+    }
+
+    monetize :amount_cents
+
     aasm do
       state :checkout, initial: true
       state :processing
