@@ -4,13 +4,15 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # Specify your gem's dependencies in odd_pay.gemspec.
 gemspec
 
-gem 'money-rails'
 gem 'aasm'
+gem 'money-rails'
 gem 'pg'
 
 group :development do
   gem 'annotate'
   gem 'rails-erd', '> 1.6.1'
+  gem 'rubocop', require: false # Linter
+  gem 'rubocop-airbnb'
 end
 
 group :test do
@@ -18,9 +20,9 @@ group :test do
 end
 
 group :development, :test do
-  gem 'rspec-rails'
   gem 'factory_bot_rails'
   gem 'pry-remote'
+  gem 'rspec-rails'
 end
 
 # To use a debugger
