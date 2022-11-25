@@ -1,3 +1,5 @@
+require 'odd_pay/act_as_buyer'
+
 module OddPay
   class Engine < ::Rails::Engine
     isolate_namespace OddPay
