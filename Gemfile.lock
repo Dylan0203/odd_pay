@@ -1,4 +1,9 @@
 PATH
+  remote: ../../spgateway_payment_and_invoice
+  specs:
+    spgateway_payment_and_invoice_client (1.0.5)
+
+PATH
   remote: .
   specs:
     odd_pay (0.1.0)
@@ -6,6 +11,7 @@ PATH
       money-rails
       pg
       rails (~> 6.1.7)
+      spgateway_payment_and_invoice_client
 
 GEM
   remote: https://rubygems.org/
@@ -235,6 +241,7 @@ DEPENDENCIES
   rubocop
   rubocop-airbnb
   shoulda-matchers (~> 5.0)
+  spgateway_payment_and_invoice_client!
 
 BUNDLED WITH
    2.3.19
