@@ -9,6 +9,7 @@
 #  information     :jsonb
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  reference       :string
 #
 module OddPay
   class Notification < ApplicationRecord
