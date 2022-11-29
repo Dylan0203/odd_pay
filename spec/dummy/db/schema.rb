@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_04_060530) do
+ActiveRecord::Schema.define(version: 2022_11_26_102124) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 2022_11_04_060530) do
     t.jsonb "information"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "reference"
     t.index ["payment_info_id"], name: "index_odd_pay_notifications_on_payment_info_id"
   end
 
