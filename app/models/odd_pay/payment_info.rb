@@ -16,6 +16,7 @@
 module OddPay
   class PaymentInfo < ApplicationRecord
     include AASM
+    include OddPay::Concerns::IdHashable
 
     belongs_to :invoice, touch: true
     belongs_to :payment_method
