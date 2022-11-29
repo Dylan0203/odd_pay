@@ -7,6 +7,8 @@ gemspec
 gem 'aasm'
 gem 'money-rails'
 gem 'pg'
+# gem 'spgateway_payment_and_invoice_client', github: 'oracle-design/spgateway_payment_and_invoice', branch: 'master'
+gem 'spgateway_payment_and_invoice_client', path: '../../spgateway_payment_and_invoice'
 
 group :development do
   gem 'annotate'
