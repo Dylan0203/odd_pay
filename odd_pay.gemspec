@@ -25,4 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "aasm"
   spec.add_dependency "pg"
   spec.add_dependency "spgateway_payment_and_invoice_client"
+  spec.add_dependency "hashids"
 end
