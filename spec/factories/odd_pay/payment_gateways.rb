@@ -12,6 +12,13 @@
 #
 FactoryBot.define do
   factory :payment_gateway, class: 'OddPay::PaymentGateway' do
-
+    gateway_provider { :NewebPay }
+    gateway_info do
+      {
+        hash_iv: 'hash_iv',
+        hash_key: 'hash_key',
+        merchant_id: 'merchant_id'
+      }
+    end
   end
 end
