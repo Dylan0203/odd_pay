@@ -13,7 +13,7 @@
 #  title             :string
 #  description       :text
 #  note              :text
-#  invoice_type      :integer          default(0)
+#  invoice_type      :integer          default("normal")
 #  subscription_info :jsonb
 #  aasm_state        :string
 #  item_list         :jsonb

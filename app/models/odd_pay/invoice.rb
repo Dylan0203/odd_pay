@@ -13,7 +13,7 @@
 #  title             :string
 #  description       :text
 #  note              :text
-#  invoice_type      :integer          default(0)
+#  invoice_type      :integer          default("normal")
 #  subscription_info :jsonb
 #  aasm_state        :string
 #  item_list         :jsonb
@@ -32,6 +32,15 @@ module OddPay
     has_many :notifications, through: :payment_infos
     has_many :payments, through: :payment_infos
 
+    enum invoice_type: {
+      normal: 0,
+      subscription: 1
+    }
+
+    monetize :amount_cents
+
+    validate { OddPay::Invoice::DataValidator.new(self).validate }
+
     aasm do
       state :checkout, initial: true
       state :paid
@@ -49,6 +58,32 @@ module OddPay
       event :cancel do
         transitions from: %i(processing paid), to: :canceled
       end
+    end
+
+    def normalized_item_list
+      item_list.map do |info|
+        {
+          name: info['name'],
+          quantity: info['quantity'].to_i,
+          unit_price: info['unit_price'].to_i
+        }
+      end
+    end
+
+    def period_type
+      subscription_info['period_type'].try(:to_sym)
+    end
+
+    def period_point
+      subscription_info['period_point'].to_i
+    end
+
+    def period_times
+      subscription_info['period_times'].to_i
+    end
+
+    def grace_period_in_days
+      subscription_info['grace_period_in_days'].to_i.days
     end
   end
 end
