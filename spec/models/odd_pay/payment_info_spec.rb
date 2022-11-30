@@ -18,8 +18,8 @@ require 'rails_helper'
 module OddPay
   RSpec.describe PaymentInfo, type: :model do
     # associations
-    it { should belong_to(:invoice) }
     it { should belong_to(:payment_method) }
+    it { should belong_to(:invoice).touch(true).without_validating_presence }
     it { should have_many(:notifications) }
     it { should have_many(:payments) }
 

@@ -13,7 +13,7 @@
 #  title             :string
 #  description       :text
 #  note              :text
-#  invoice_type      :integer          default(0)
+#  invoice_type      :integer          default("normal")
 #  subscription_info :jsonb
 #  aasm_state        :string
 #  item_list         :jsonb
@@ -24,6 +24,26 @@
 #
 FactoryBot.define do
   factory :invoice, class: 'OddPay::Invoice' do
+    billing_email { 'billing_email' }
+    billing_phone { 'billing_phone' }
+    billing_address { 'billing_address' }
+    invoice_type { :subscription }
 
+    subscription_info do
+      {
+        period_type: 'days',
+        period_point: '01',
+        period_times: 99,
+        grace_period_in_days: 2
+      }
+    end
+
+    item_list do
+      [
+        { name: 'item_name', quantity: '1', unit_price: '100' }
+      ]
+    end
+
+    amount { 100 }
   end
 end
