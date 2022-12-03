@@ -14,5 +14,7 @@
 module OddPay
   class PaymentMethod < ApplicationRecord
     belongs_to :payment_gateway, touch: true
+
+    validate { OddPay::PaymentMethod::DataValidator.new(self).validate }
   end
 end

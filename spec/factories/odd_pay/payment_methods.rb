@@ -14,5 +14,8 @@
 FactoryBot.define do
   factory :payment_method, class: 'OddPay::PaymentMethod' do
     payment_gateway
+
+    name { 'Credit Card' }
+    payment_type { :subscription }
   end
 end
