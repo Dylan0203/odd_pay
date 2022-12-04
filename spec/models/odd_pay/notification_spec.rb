@@ -5,7 +5,7 @@
 #  id              :bigint           not null, primary key
 #  payment_info_id :bigint
 #  raw_data        :jsonb
-#  notify_type     :integer          default(0)
+#  notify_type     :integer          default("init")
 #  information     :jsonb
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
