@@ -33,6 +33,8 @@ module OddPay
 
     monetize :amount_cents
 
+    validate { OddPay::PaymentInfo::DataValidator.new(self).validate }
+
     aasm do
       state :checkout, initial: true
       state :processing
