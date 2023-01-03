@@ -58,6 +58,7 @@ module OddPay
 
       event :fail do
         transitions from: %i(processing), to: :failed
+        after { create_new_payment_info }
       end
 
       event :cancel do
@@ -68,6 +69,36 @@ module OddPay
         transitions from: %i(processing), to: :void
       end
     end
+
+    def current_payment_gateway
+      @current_payment_gateway ||= PaymentGateway.find(gateway_info['gateway_id'])
+    end
+
+    def payment_type
+      gateway_info['payment_type'].to_sym
+    end
+
+    def generate_post_info(params = {})
+      ActiveRecord::Base.transaction do
+        assign_attributes(
+          merchant_order_number: OddPay::PaymentGatewayService.generate_merchant_order_number(self)
+        )
+        process!
+        ignore_processing_payment_infos
+        OddPay::PaymentGatewayService.generate_post_info(self, params)
+      end
+    end
+
+    private
+
+    def create_new_payment_info
+      invoice.payment_infos.create!(payment_method: payment_method)
+    end
+
+    def ignore_processing_payment_infos
+      invoice.payment_infos.processing.each do |payment_info|
+        payment_info.ignore! if payment_info != self
+      end
     end
   end
 end
