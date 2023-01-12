@@ -19,7 +19,8 @@ module OddPay
       init: 0,
       paid: 1,
       failed: 2,
-      canceled: 3
+      canceled: 3,
+      async_payment_info: 4
     }
 
     validate { OddPay::Notification::DataValidator.new(self).validate }

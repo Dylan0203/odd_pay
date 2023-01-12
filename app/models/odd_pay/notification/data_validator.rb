@@ -2,7 +2,7 @@ module OddPay
   class Notification::DataValidator
     attr_reader :notification, :errors
 
-    ALLOWED_REFERENCES = %w(payment_notify cancel_notify).freeze
+    ALLOWED_REFERENCES = %w(payment_notify cancel_notify async_payment_notify).freeze
 
     def initialize(notification)
       @notification = notification

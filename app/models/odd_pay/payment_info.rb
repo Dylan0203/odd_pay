@@ -38,6 +38,7 @@ module OddPay
     aasm do
       state :checkout, initial: true
       state :processing
+      state :waiting_async_payment
       state :paid
       state :overdue
       state :failed
@@ -46,6 +47,10 @@ module OddPay
 
       event :process do
         transitions from: %i(checkout), to: :processing
+      end
+
+      event :wait do
+        transitions from: %i(processing waiting_async_payment), to: :waiting_async_payment
       end
 
       event :pay do

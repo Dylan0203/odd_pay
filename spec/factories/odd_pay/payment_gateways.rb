@@ -15,9 +15,9 @@ FactoryBot.define do
     gateway_provider { :NewebPay }
     gateway_info do
       {
-        hash_iv: SecureRandom.alphanumeric,
-        hash_key: SecureRandom.hex,
-        merchant_id: 'merchant_id'
+        "hash_iv" => "ChcIXEFtZWudHfuP",
+        "hash_key" => "fnRbrn8C5Q0YLEJ0WVBFYrUPqJKORMlb",
+        "merchant_id" => "MS344441353"
       }
     end
   end
