@@ -53,7 +53,8 @@ module OddPay
     def generate_post_info(params)
       %Q(OddPay::#{gateway_provider}::PostInfoGenerator).
         constantize.
-        call(gateway_source)
+        call(gateway_source, params)
+    end
 
     def update_notification
       %Q(OddPay::#{gateway_provider}::NotificationUpdater).

@@ -86,8 +86,8 @@ module OddPay
         else
           {
             post_url: NORMAL_PAYMENT_API_END_POINTS[api_mode],
-            post_params: api_client.generate_mpg_params(
-              post_params.
+            post_params: api_client.generate_mpg_params_20(
+              normal_post_params.
                 merge(normal_payment_method_params)
             )
           }
@@ -116,11 +116,11 @@ module OddPay
           ReturnURL: thanks_for_purchase_url,
           PayerEmail: billing_email,
           NotifyURL: notify_url,
-          BackURL: return_url
+          BackURL: back_url
         }.compact
       end
 
-      def post_params
+      def normal_post_params
         {
           MerchantOrderNo: merchant_order_number,
           Amt: payment_amount,
@@ -129,9 +129,10 @@ module OddPay
           EmailModify: 0,
           LoginType: 0,
           OrderComment: nil,
-          ReturnURL: return_url,
+          ReturnURL: thanks_for_purchase_url,
           NotifyURL: notify_url,
-          CustomerURL: thanks_for_purchase_url,
+          CustomerURL: async_payment_url,
+          ClientBackURL: back_url,
           ExpireDate: nil # TODO:
         }.compact
       end
@@ -140,14 +141,19 @@ module OddPay
         Engine.routes.url_helpers.payment_info_notify_url({ payment_info_id: payment_info.hashid }.merge(default_url_optoins))
       end
 
-      def return_url
-        params[:return_url] ||
+      def back_url
+        params[:back_url] ||
           Rails.application.routes.url_helpers.root_url(default_url_optoins)
       end
 
       def thanks_for_purchase_url
         params[:thanks_for_purchase_url] ||
           Engine.routes.url_helpers.payment_info_thanks_for_purchase_url({ payment_info_id: payment_info.hashid }.merge(default_url_optoins))
+      end
+
+      def async_payment_url
+        params[:async_payment_url] ||
+          Engine.routes.url_helpers.payment_info_async_payment_url({ payment_info_id: payment_info.hashid }.merge(default_url_optoins))
       end
 
       def expire_date
