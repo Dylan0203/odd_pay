@@ -36,6 +36,7 @@ module OddPay
 
     describe 'When payment type is normal' do
       before do
+        payment_info.invoice.update! invoice_type: :normal
         payment_info.payment_method.update! payment_type: :credit_card
         payment_info.save!
       end

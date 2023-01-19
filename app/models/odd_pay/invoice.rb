@@ -85,5 +85,12 @@ module OddPay
     def grace_period_in_days
       subscription_info['grace_period_in_days'].to_i.days
     end
+
+    def available_payment_methods
+      OddPay::PaymentMethod.where(
+        enabled: true,
+        payment_type: OddPay::PaymentGatewayService::AVAILABLE_PAYMENT_TYPE_MAP[invoice_type.to_sym]
+      )
+    end
   end
 end

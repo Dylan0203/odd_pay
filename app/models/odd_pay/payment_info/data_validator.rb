@@ -1,10 +1,11 @@
 module OddPay
   class PaymentInfo::DataValidator
-    attr_reader :payment_info, :invoice, :errors
+    attr_reader :payment_info, :invoice, :payment_method, :errors
 
     def initialize(payment_info)
       @payment_info = payment_info
       @invoice = payment_info.invoice
+      @payment_method = payment_info.payment_method
       @errors = payment_info.errors
     end
 
@@ -12,7 +13,8 @@ module OddPay
       if payment_info.checkout?
         check_if_has_checkout_payment_info_already
         assign_gateway_info
-        assign_amount
+        try_assign_amount
+        check_payment_method_type
       end
     end
 
@@ -24,7 +26,6 @@ module OddPay
     end
 
     def assign_gateway_info
-      payment_method = payment_info.payment_method
       return unless payment_method
 
       payment_info.gateway_info = {
@@ -33,8 +34,16 @@ module OddPay
       }
     end
 
-    def assign_amount
-      payment_info.assign_attributes amount: payment_info.invoice.amount
+    def try_assign_amount
+      return unless payment_info.amount.zero?
+      payment_info.assign_attributes amount: invoice.amount
+    end
+
+    def check_payment_method_type
+      return unless payment_method
+
+      return if invoice.available_payment_methods.include?(payment_method)
+      errors.add(:base, "payment mathod type: #{payment_method.payment_type} is not for Invoice type with #{invoice.invoice_type}")
     end
   end
 end

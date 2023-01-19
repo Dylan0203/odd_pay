@@ -3,8 +3,7 @@ module OddPay
     include OddPay::Composables::ApiClient
 
     AVAILABLE_GATEWAYS = %i(NewebPay).freeze
-    PAYMENT_METHODS = %i(
-      subscription
+    NORMAL_PAYMENT_TYPES = %i(
       credit_card
       vacc
       webatm
@@ -21,6 +20,17 @@ module OddPay
       barcode
       cvscom
     ).freeze
+    SUBSCRIPTION_PAYMENT_TYPES = %i(
+      subscription
+    ).freeze
+    PAYMENT_TYPES = (
+      NORMAL_PAYMENT_TYPES +
+        SUBSCRIPTION_PAYMENT_TYPES
+    ).freeze
+    AVAILABLE_PAYMENT_TYPE_MAP = {
+      normal: NORMAL_PAYMENT_TYPES,
+      subscription: SUBSCRIPTION_PAYMENT_TYPES
+    }.freeze
 
     def initialize(gateway_source)
       @gateway_source = gateway_source
@@ -40,6 +50,27 @@ module OddPay
 
     def self.parse_notification(notification)
       new(notification).parse_notification
+    end
+
+    def self.update_payment_info(payment_info)
+      OddPay::PaymentGatewayService::PaymentInfoUpdater.update(payment_info)
+    end
+
+    def self.update_invoice(invoice)
+      OddPay::PaymentGatewayService::InvoiceUpdater.update(invoice)
+    end
+
+    def self.cancel_invoice(invoice)
+      last_payment_info = invoice.payment_infos.paid.last
+      new(last_payment_info).cancel_payment_info
+    end
+
+    def self.expired_payment_infos_processer
+      OddPay::PaymentInfo.
+        expired.
+        find_each(batch_size: 100) do |payment_info|
+          OddPay::PaymentGatewayService::PaymentInfoExpireUpdater.update(payment_info)
+        end
     end
 
     def generate_merchant_order_number
@@ -64,6 +95,12 @@ module OddPay
       %Q(OddPay::#{gateway_provider}::NotificationUpdater).
         constantize.
         parse_notification(gateway_source)
+    end
+
+    def cancel_payment_info
+      %Q(OddPay::#{gateway_provider}::PaymentInfoCanceler).
+        constantize.
+        call(gateway_source)
     end
   end
 end

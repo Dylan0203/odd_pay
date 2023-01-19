@@ -1,6 +1,6 @@
 module OddPay
   module NewebPay
-    AVAILABLE_PAYMENT_METHODS = %i(
+    AVAILABLE_PAYMENT_TYPES = %i(
       subscription
       credit_card
       vacc

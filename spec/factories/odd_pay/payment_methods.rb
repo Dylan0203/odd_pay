@@ -17,5 +17,6 @@ FactoryBot.define do
 
     name { 'Credit Card' }
     payment_type { :subscription }
+    enabled { true }
   end
 end
