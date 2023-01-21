@@ -5,8 +5,6 @@ module OddPay
   class Engine < ::Rails::Engine
     isolate_namespace OddPay
 
-    Money.locale_backend = :currency
-
     DEFAULT_URL_OPTIONS = {
       host: ENV['ngrok_url'] || ENV['app_domain'] || 'app_domain',
       protocol: ENV['http_protocol'] || 'https'
