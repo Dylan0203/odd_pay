@@ -39,6 +39,8 @@ module OddPay
       state :checkout, initial: true
       state :processing
       state :waiting_async_payment
+      state :balance_due
+      state :credit_owed
       state :paid
       state :overdue
       state :failed
@@ -51,6 +53,14 @@ module OddPay
 
       event :wait do
         transitions from: %i(processing waiting_async_payment), to: :waiting_async_payment
+      end
+
+      event :balance_owe do
+        transitions from: %i(processing waiting_async_payment), to: :balance_due
+      end
+
+      event :credit_owe do
+        transitions from: %i(processing waiting_async_payment), to: :credit_owed
       end
 
       event :pay do

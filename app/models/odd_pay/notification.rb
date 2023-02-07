@@ -24,5 +24,7 @@ module OddPay
     }
 
     validate { OddPay::Notification::DataValidator.new(self).validate }
+
+    scope :has_notify_type, -> { where.not(notify_type: :init) }
   end
 end
