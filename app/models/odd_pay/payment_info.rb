@@ -73,7 +73,6 @@ module OddPay
 
       event :fail do
         transitions from: %i(processing), to: :failed
-        after { create_new_payment_info }
       end
 
       event :cancel do
@@ -105,10 +104,6 @@ module OddPay
     end
 
     private
-
-    def create_new_payment_info
-      invoice.payment_infos.create!(payment_method: payment_method)
-    end
 
     def ignore_processing_payment_infos
       invoice.payment_infos.processing.each do |payment_info|

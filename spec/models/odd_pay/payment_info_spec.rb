@@ -112,16 +112,6 @@ module OddPay
   end
 
   describe 'private methods' do
-    describe '#create_new_payment_info' do
-      let(:payment_info) { create :payment_info, aasm_state: :failed }
-
-      it 'will create an new payment_info with same payment_method' do
-        new_payment_info = payment_info.send(:create_new_payment_info)
-
-        expect(new_payment_info.payment_method).to eq payment_info.payment_method
-      end
-    end
-
     describe '#ignore_processing_payment_infos' do
       let!(:payment_info_1) { create :payment_info, aasm_state: :processing }
       let!(:payment_info_2) { create :payment_info, invoice: payment_info_1.invoice, aasm_state: :processing }
