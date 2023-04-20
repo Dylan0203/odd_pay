@@ -10,6 +10,7 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
   host: <%= ENV['pg_host'] || 'localhost' %>
+  port: 5433
   username: odd_pay
   password: odd_pay
 
