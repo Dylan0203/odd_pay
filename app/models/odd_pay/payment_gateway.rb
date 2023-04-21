@@ -16,7 +16,7 @@ module OddPay
 
     validate { OddPay::PaymentGateway::DataValidator.new(self).validate }
 
-    def available_payment_methods
+    def available_payment_types
       OddPay::PaymentGatewayService::PAYMENT_TYPES &
         "OddPay::#{gateway_provider}::AVAILABLE_PAYMENT_TYPES".constantize
     end

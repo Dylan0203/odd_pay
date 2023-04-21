@@ -16,10 +16,10 @@ module OddPay
 
     def check_payment_type
       return unless payment_gateway
-      available_payment_methods = payment_gateway.available_payment_methods
-      return if available_payment_methods.include?(payment_method.payment_type.try(:to_sym))
+      available_payment_types = payment_gateway.available_payment_types
+      return if available_payment_types.include?(payment_method.payment_type.try(:to_sym))
 
-      errors.add(:payment_type, "`payment_type` must be one of #{available_payment_methods.join(', ')}")
+      errors.add(:payment_type, "`payment_type` must be one of #{available_payment_types.join(', ')}")
     end
   end
 end
