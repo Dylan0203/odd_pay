@@ -14,14 +14,8 @@ module OddPay
           period_point: '01',
           period_times: 99,
           grace_period_in_days: 2
-        },
-        item_list: [item_info_1],
-        amount: 100
+        }
       }
-    end
-
-    let(:item_info_1) do
-      { name: 'item_name', quantity: '1', unit_price: '100' }
     end
 
     shared_context 'success' do
@@ -76,22 +70,15 @@ module OddPay
       end
     end
 
-    describe 'item_list' do
-      context 'when list is empty' do
-        before { params[:item_list] = [] }
+    describe 'amount' do
+      context 'when invoice is checkout' do
+        let!(:item_1) { create :invoice_item, invoice: invoice, price: 100 }
+        let!(:item_2) { create :invoice_item, invoice: invoice, price: 100 }
 
-        include_context 'failed'
-      end
+        before { invoice.reload.save! }
 
-      %i(
-        name
-        quantity
-        unit_price
-      ).each do |key|
-        context "if item info missing `#{key}`" do
-          before { item_info_1[key] = nil }
-
-          include_context 'failed'
+        it 'amount will have the same amount from items' do
+          expect(invoice.amount).to eq Money.from_amount(200)
         end
       end
     end

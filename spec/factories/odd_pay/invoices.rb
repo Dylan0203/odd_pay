@@ -5,8 +5,6 @@
 #  id                :bigint           not null, primary key
 #  buyer_type        :string
 #  buyer_id          :bigint
-#  payable_type      :string
-#  payable_id        :bigint
 #  billing_email     :string
 #  billing_phone     :string
 #  billing_address   :string
@@ -16,7 +14,6 @@
 #  invoice_type      :integer          default("normal")
 #  subscription_info :jsonb
 #  aasm_state        :string
-#  item_list         :jsonb
 #  amount_cents      :integer          default(0), not null
 #  amount_currency   :string           default("USD"), not null
 #  created_at        :datetime         not null
@@ -36,12 +33,6 @@ FactoryBot.define do
         period_times: 99,
         grace_period_in_days: 2
       }
-    end
-
-    item_list do
-      [
-        { name: 'item_name', quantity: '1', unit_price: '100' }
-      ]
     end
 
     amount { 100 }

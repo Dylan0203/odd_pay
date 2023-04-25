@@ -10,16 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_26_102124) do
+ActiveRecord::Schema.define(version: 2023_04_25_094454) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "odd_pay_invoice_items", force: :cascade do |t|
+    t.bigint "invoice_id"
+    t.string "buyable_type"
+    t.bigint "buyable_id"
+    t.integer "price_cents", default: 0, null: false
+    t.string "price_currency", default: "USD", null: false
+    t.integer "quantity", default: 1
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["buyable_type", "buyable_id"], name: "index_odd_pay_invoice_items_on_buyable"
+    t.index ["invoice_id"], name: "index_odd_pay_invoice_items_on_invoice_id"
+  end
+
   create_table "odd_pay_invoices", force: :cascade do |t|
     t.string "buyer_type"
     t.bigint "buyer_id"
-    t.string "payable_type"
-    t.bigint "payable_id"
     t.string "billing_email"
     t.string "billing_phone"
     t.string "billing_address"
@@ -29,13 +42,11 @@ ActiveRecord::Schema.define(version: 2022_11_26_102124) do
     t.integer "invoice_type", default: 0
     t.jsonb "subscription_info", default: {}
     t.string "aasm_state"
-    t.jsonb "item_list", default: []
     t.integer "amount_cents", default: 0, null: false
     t.string "amount_currency", default: "USD", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["buyer_type", "buyer_id"], name: "index_odd_pay_invoices_on_buyer"
-    t.index ["payable_type", "payable_id"], name: "index_odd_pay_invoices_on_payable"
   end
 
   create_table "odd_pay_notifications", force: :cascade do |t|
@@ -140,6 +151,7 @@ ActiveRecord::Schema.define(version: 2022_11_26_102124) do
     t.index ["uniform_invoice_gateway_id"], name: "index_odd_pay_uniform_invoices_on_uniform_invoice_gateway_id"
   end
 
+  add_foreign_key "odd_pay_invoice_items", "odd_pay_invoices", column: "invoice_id"
   add_foreign_key "odd_pay_notifications", "odd_pay_payment_infos", column: "payment_info_id"
   add_foreign_key "odd_pay_payment_infos", "odd_pay_invoices", column: "invoice_id"
   add_foreign_key "odd_pay_payment_infos", "odd_pay_payment_methods", column: "payment_method_id"

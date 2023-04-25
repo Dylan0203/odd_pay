@@ -173,12 +173,12 @@ module OddPay
       end
 
       def item_description
-        compose_item_info = ->(acc, item_info) do
-          acc << %Q(#{item_info[:name]}＊#{item_info[:quantity]})
+        compose_item_info = ->(acc, item) do
+          acc << %Q(#{item.name}＊#{item.quantity})
         end
 
         invoice.
-          normalized_item_list.
+          items.
           inject([], &compose_item_info).
           join('／').
           truncate(100)

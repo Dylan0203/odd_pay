@@ -10,10 +10,11 @@ module OddPay
     end
 
     def validate
+      return unless invoice.checkout?
       check_basic_info
-      check_item_list
       check_invoice_type
       check_subscription_info if invoice.subscription?
+      assign_invoice_amount
     end
 
     def check_basic_info
@@ -22,25 +23,10 @@ module OddPay
       errors.add(:billing_address, :blank) if invoice.billing_address.blank?
     end
 
-    def check_item_list
-      return errors.add(:item_list, 'must be an Array format') unless normalized_item_list.class == Array
-      return errors.add(:item_list, 'must have at list one item info') if normalized_item_list.blank?
-      normalized_item_list.each_with_index do |info, index|
-        human_index = index + 1
-        errors.add(:item_list, "The #{human_index}th item info missing `name`") if info[:name].blank?
-        errors.add(:item_list, "The #{human_index}th item info `quantity` must grater than 0") unless info[:quantity] > 0
-        errors.add(:item_list, "The #{human_index}th item info `unit_price` must grater than 0") unless info[:unit_price] > 0
+    def assign_invoice_amount
+      invoice.amount = invoice.items.inject(0) do |amount, item|
+        amount + (item.quantity * item.price)
       end
-      check_amount
-    end
-
-    def check_amount
-      sum = normalized_item_list.inject(0) do |amount, info|
-        amount + (info[:quantity] * info[:unit_price])
-      end
-
-      errors.add(:amount, "incorrect amount") if sum != invoice.amount.to_i
-      errors.add(:amount, "amount can not be zero") unless sum > 0
     end
 
     def check_invoice_type

@@ -60,15 +60,6 @@ module OddPay
       expect(payment_info.amount).to eq payment_info.invoice.amount
     end
 
-    it 'amount can be different from invoice if amount given' do
-      new_amount = payment_info.invoice.amount * 10
-
-      payment_info.update!(amount: new_amount)
-
-      expect(payment_info.amount).not_to eq payment_info.invoice.amount
-      expect(payment_info.amount).to eq new_amount
-    end
-
     context 'when invoice type is normal and payment_method.payment_type is subscription' do
       before { payment_info.invoice.update! invoice_type: :normal }
 

@@ -5,8 +5,6 @@
 #  id                :bigint           not null, primary key
 #  buyer_type        :string
 #  buyer_id          :bigint
-#  payable_type      :string
-#  payable_id        :bigint
 #  billing_email     :string
 #  billing_phone     :string
 #  billing_address   :string
@@ -16,7 +14,6 @@
 #  invoice_type      :integer          default("normal")
 #  subscription_info :jsonb
 #  aasm_state        :string
-#  item_list         :jsonb
 #  amount_cents      :integer          default(0), not null
 #  amount_currency   :string           default("USD"), not null
 #  created_at        :datetime         not null
@@ -27,7 +24,7 @@ module OddPay
     include AASM
 
     belongs_to :buyer, polymorphic: true, touch: true, optional: true
-    belongs_to :buyable, polymorphic: true, touch: true, optional: true
+    has_many :items, class_name: 'OddPay::Invoice::Item'
     has_many :payment_infos
     has_many :notifications, through: :payment_infos
     has_many :payments, through: :payment_infos
@@ -57,16 +54,6 @@ module OddPay
 
       event :cancel do
         transitions from: %i(processing paid), to: :canceled
-      end
-    end
-
-    def normalized_item_list
-      item_list.map do |info|
-        {
-          name: info['name'],
-          quantity: info['quantity'].to_i,
-          unit_price: info['unit_price'].to_i
-        }
       end
     end
 
