@@ -10,7 +10,12 @@ module OddPay
     end
 
     def validate
-      return unless invoice.checkout?
+      if invoice.confirmed?
+        check_confirmed_info
+      end
+    end
+
+    def check_confirmed_info
       check_basic_info
       check_invoice_type
       check_subscription_info if invoice.subscription?

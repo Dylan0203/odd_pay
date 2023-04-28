@@ -18,67 +18,68 @@ module OddPay
       }
     end
 
-    shared_context 'success' do
-      it 'will save without errors' do
-        expect { invoice.save! }.not_to raise_error
+    context 'when confirming an invoice' do
+      shared_context 'success' do
+        it 'will return true' do
+          expect(invoice.confirm!).to be_truthy
+        end
       end
-    end
 
-    shared_context 'failed' do
-      it 'will raise errors' do
-        expect { invoice.save! }.to raise_error ActiveRecord::RecordInvalid
+      shared_context 'failed' do
+        it 'will return false' do
+          expect(invoice.confirm!).to be_falsey
+        end
       end
-    end
 
-    include_context 'success'
+      include_context 'success'
 
-    %i(
-      billing_email
-      billing_phone
-      billing_address
-      invoice_type
-      subscription_info
-    ).each do |key|
-      context "if missing attribute `#{key}`" do
-        before { params[key] = nil }
-
-        include_context 'failed'
-      end
-    end
-
-    describe 'subscription_info' do
       %i(
-        period_type
-        period_point
-        period_times
-        grace_period_in_days
+        billing_email
+        billing_phone
+        billing_address
+        invoice_type
+        subscription_info
       ).each do |key|
-        context "if missing data `#{key}`" do
-          before { params[:subscription_info][key] = nil }
+        context "if missing attribute `#{key}`" do
+          before { params[key] = nil }
 
           include_context 'failed'
         end
       end
 
-      context "when subscription_info has no value but invoice_type is `normal`" do
-        before do
-          params[:invoice_type] = :normal
-          params[:subscription_info] = nil
+      describe 'subscription_info' do
+        %i(
+          period_type
+          period_point
+          period_times
+          grace_period_in_days
+        ).each do |key|
+          context "if missing data `#{key}`" do
+            before { params[:subscription_info][key] = nil }
+
+            include_context 'failed'
+          end
         end
 
-        include_context 'success'
+        context "when subscription_info has no value but invoice_type is `normal`" do
+          before do
+            params[:invoice_type] = :normal
+            params[:subscription_info] = nil
+          end
+
+          include_context 'success'
+        end
       end
-    end
 
-    describe 'amount' do
-      context 'when invoice is checkout' do
-        let!(:item_1) { create :invoice_item, invoice: invoice, price: 100 }
-        let!(:item_2) { create :invoice_item, invoice: invoice, price: 100 }
+      describe 'amount' do
+        context 'when confirming an invoice' do
+          let!(:item_1) { create :invoice_item, invoice: invoice, price: 100 }
+          let!(:item_2) { create :invoice_item, invoice: invoice, price: 100 }
 
-        before { invoice.reload.save! }
-
-        it 'amount will have the same amount from items' do
-          expect(invoice.amount).to eq Money.from_amount(200)
+          it 'amount will have the same amount from items' do
+            invoice.confirm!
+            expect(invoice.amount).to eq Money.from_amount(200)
+          end
         end
       end
     end

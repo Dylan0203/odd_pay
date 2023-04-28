@@ -34,7 +34,5 @@ FactoryBot.define do
         grace_period_in_days: 2
       }
     end
-
-    amount { 100 }
   end
 end

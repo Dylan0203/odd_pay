@@ -40,9 +40,18 @@ module OddPay
 
     aasm do
       state :checkout, initial: true
+      state :confirmed
       state :paid
       state :overdue
       state :canceled
+
+      event :back_to_check_out do
+        transitions from: %i(confirmed), to: :checkout
+      end
+
+      event :confirm do
+        transitions from: %i(checkout), to: :confirmed
+      end
 
       event :pay do
         transitions from: %i(checkout paid overdue), to: :paid

@@ -18,6 +18,8 @@ module OddPay
     include AASM
     include OddPay::Concerns::IdHashable
 
+    InvalidInvoiceState = Class.new(StandardError)
+
     belongs_to :invoice, touch: true
     belongs_to :payment_method
     has_many :notifications
@@ -93,6 +95,8 @@ module OddPay
     end
 
     def generate_post_info(params = {})
+      raise InvalidInvoiceState, 'only confirmed invoice can generate post_info' unless invoice.confirmed?
+
       ActiveRecord::Base.transaction do
         assign_attributes(
           merchant_order_number: OddPay::PaymentGatewayService.generate_merchant_order_number(self)

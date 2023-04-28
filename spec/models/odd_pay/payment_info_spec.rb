@@ -83,6 +83,8 @@ module OddPay
   describe '#generate_post_info' do
     let(:payment_info) { create :payment_info }
 
+    before { payment_info.invoice.confirm! }
+
     it 'will return post form info' do
       post_info = payment_info.generate_post_info
 
@@ -107,6 +109,14 @@ module OddPay
         payment_info.generate_post_info
 
         expect(payment_info_2.reload.void?).to be true
+      end
+    end
+
+    context 'if invoice is not confirm' do
+      before { payment_info.invoice.back_to_check_out! }
+
+      it 'will raise error' do
+        expect { payment_info.generate_post_info }.to raise_error OddPay::PaymentInfo::InvalidInvoiceState
       end
     end
   end
