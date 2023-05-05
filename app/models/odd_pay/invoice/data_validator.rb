@@ -23,9 +23,9 @@ module OddPay
     end
 
     def check_basic_info
-      errors.add(:billing_email, :blank) if invoice.billing_email.blank?
-      errors.add(:billing_phone, :blank) if invoice.billing_phone.blank?
-      errors.add(:billing_address, :blank) if invoice.billing_address.blank?
+      errors.add(:email, :blank) if invoice.email.blank?
+      errors.add(:contact_phone, :blank) if invoice.contact_phone.blank?
+      errors.add(:address, :blank) if invoice.address.blank?
     end
 
     def assign_invoice_amount

@@ -5,9 +5,8 @@
 #  id                :bigint           not null, primary key
 #  buyer_type        :string
 #  buyer_id          :bigint
-#  billing_email     :string
-#  billing_phone     :string
-#  billing_address   :string
+#  email             :string
+#  contact_phone     :string
 #  title             :string
 #  description       :text
 #  note              :text
@@ -18,6 +17,10 @@
 #  amount_currency   :string           default("USD"), not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  name              :string
+#  company_name      :string
+#  company_ein       :string
+#  address           :jsonb
 #
 module OddPay
   class Invoice < ApplicationRecord
@@ -45,7 +48,7 @@ module OddPay
       state :overdue
       state :canceled
 
-      event :back_to_check_out do
+      event :back_to_checkout do
         transitions from: %i(confirmed), to: :checkout
       end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_04_25_094454) do
+ActiveRecord::Schema.define(version: 2023_05_04_153101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,9 +33,8 @@ ActiveRecord::Schema.define(version: 2023_04_25_094454) do
   create_table "odd_pay_invoices", force: :cascade do |t|
     t.string "buyer_type"
     t.bigint "buyer_id"
-    t.string "billing_email"
-    t.string "billing_phone"
-    t.string "billing_address"
+    t.string "email"
+    t.string "contact_phone"
     t.string "title"
     t.text "description"
     t.text "note"
@@ -46,6 +45,10 @@ ActiveRecord::Schema.define(version: 2023_04_25_094454) do
     t.string "amount_currency", default: "USD", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "name"
+    t.string "company_name"
+    t.string "company_ein"
+    t.jsonb "address", default: {}
     t.index ["buyer_type", "buyer_id"], name: "index_odd_pay_invoices_on_buyer"
   end
 

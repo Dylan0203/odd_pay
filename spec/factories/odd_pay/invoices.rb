@@ -5,9 +5,8 @@
 #  id                :bigint           not null, primary key
 #  buyer_type        :string
 #  buyer_id          :bigint
-#  billing_email     :string
-#  billing_phone     :string
-#  billing_address   :string
+#  email             :string
+#  contact_phone     :string
 #  title             :string
 #  description       :text
 #  note              :text
@@ -18,18 +17,24 @@
 #  amount_currency   :string           default("USD"), not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  name              :string
+#  company_name      :string
+#  company_ein       :string
+#  address           :jsonb
 #
 FactoryBot.define do
   factory :invoice, class: 'OddPay::Invoice' do
-    billing_email { 'billing_email' }
-    billing_phone { 'billing_phone' }
-    billing_address { 'billing_address' }
+    email { 'email' }
+    contact_phone { 'contact_phone' }
+    address do
+      { street: 'street' }
+    end
     invoice_type { :subscription }
 
     subscription_info do
       {
         period_type: 'days',
-        period_point: '01',
+        period_point: 2,
         period_times: 99,
         grace_period_in_days: 2
       }

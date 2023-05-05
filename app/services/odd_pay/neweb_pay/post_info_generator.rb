@@ -110,11 +110,11 @@ module OddPay
           ProdDesc: item_description,
           PeriodAmt: payment_amount,
           PeriodType: period_type,
-          PeriodPoint: invoice.period_point,
+          PeriodPoint: period_point,
           PeriodStartType: 2, # 交易模式 1=立即執行十元授權 2=立即執行委託金額授權 3=不檢查信用卡資訊，不授權
-          PeriodTimes: invoice.period_times,
+          PeriodTimes: invoice.period_times.to_s,
           ReturnURL: thanks_for_purchase_url,
-          PayerEmail: billing_email,
+          PayerEmail: email,
           NotifyURL: notify_url,
           BackURL: back_url
         }.compact
@@ -125,7 +125,7 @@ module OddPay
           MerchantOrderNo: merchant_order_number,
           Amt: payment_amount,
           ItemDesc: item_description,
-          Email: billing_email,
+          Email: email,
           EmailModify: 0,
           LoginType: 0,
           OrderComment: nil,
@@ -160,8 +160,8 @@ module OddPay
         params[:expire_date]
       end
 
-      def billing_email
-        invoice.billing_email
+      def email
+        invoice.email
       end
 
       def merchant_order_number
@@ -188,10 +188,34 @@ module OddPay
         case invoice.period_type
         when :days
           'D'
+        when :weeks
+          'W'
         when :months
           'M'
         when :years
           'Y'
+        end
+      end
+
+      def period_point
+        # 1.修改此委託於週期間，執行信用卡授權交易的時間點
+        # 2.當 PeriodType = D，此欄位值限為數字 2~999，以授權日期隔日起算。
+        #   例：數值為 2，則表示每隔兩天會執行一次委託
+        # 3.當 PeriodType =W，此欄位值限為數字 1~7，代表每週一至週日。
+        #   例：每週日執行授權，則此欄位值為 7；若週日與週一皆需執行授權，請分別建立 2 張委託
+        # 3.當 PeriodType = M，此欄位值限為數字 01~31，代表每月 1 號~31 號。若當月沒該日期則由該月的最後一天做為扣款日
+        #   例：每月 1 號執行授權，則此欄位值為 01；若於 1 個月內需授權多次，請以建立多次委託方式執行。
+        # 5.當 PeriodType =Y，此欄位值格式為 MMDD 例：每年的 3 月 15 號執行授權，則此欄位值為 0315；若於 1 年內需授權多次，請以建立多次委託方式執行
+        current_time = Time.current
+        case period_type
+        when 'D'
+          invoice.period_point.to_s
+        when 'W'
+          current_time.day
+        when 'M'
+          current_time.month
+        when 'Y'
+          current_time.strftime('%m%d')
         end
       end
     end
