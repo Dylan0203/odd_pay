@@ -3,23 +3,29 @@ module OddPay
     include OddPay::Composables::ApiClient
 
     AVAILABLE_GATEWAYS = %i(NewebPay).freeze
-    NORMAL_PAYMENT_TYPES = %i(
-      credit_card
-      vacc
-      webatm
-      credit_card_inst_3
-      credit_card_inst_6
-      credit_card_inst_12
-      credit_card_inst_18
-      credit_card_inst_24
-      credit_card_inst_30
-      android_pay
-      samsung_pay
-      union_pay
-      cvs
-      barcode
-      cvscom
-    ).freeze
+    REQUIRED_GATEWAY_INFO = {
+      NewebPay: %w(
+        hash_iv
+        hash_key
+        merchant_id
+      )
+    }.freeze
+    NORMAL_PAYMENT_TYPES = %i().freeze
+    # credit_card
+    # vacc
+    # webatm
+    # credit_card_inst_3
+    # credit_card_inst_6
+    # credit_card_inst_12
+    # credit_card_inst_18
+    # credit_card_inst_24
+    # credit_card_inst_30
+    # android_pay
+    # samsung_pay
+    # union_pay
+    # cvs
+    # barcode
+    # cvscom
     SUBSCRIPTION_PAYMENT_TYPES = %i(
       subscription
     ).freeze
@@ -70,6 +76,8 @@ module OddPay
         expired.
         find_each(batch_size: 100) do |payment_info|
           OddPay::PaymentGatewayService::PaymentInfoExpireUpdater.update(payment_info)
+
+          OddPay::PaymentGatewayService::InvoiceUpdater.update(payment_info.invoice)
         end
     end
 
