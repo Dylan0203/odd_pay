@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_04_153101) do
+ActiveRecord::Schema.define(version: 2023_05_12_181910) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 2023_05_04_153101) do
     t.string "company_name"
     t.string "company_ein"
     t.jsonb "address", default: {}
+    t.string "number"
     t.index ["buyer_type", "buyer_id"], name: "index_odd_pay_invoices_on_buyer"
   end
 

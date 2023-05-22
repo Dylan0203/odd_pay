@@ -21,6 +21,7 @@
 #  company_name      :string
 #  company_ein       :string
 #  address           :jsonb
+#  number            :string
 #
 module OddPay
   class Invoice < ApplicationRecord
@@ -40,6 +41,8 @@ module OddPay
     monetize :amount_cents
 
     validate { OddPay::Invoice::DataValidator.new(self).validate }
+
+    after_create :ensure_invoice_number
 
     aasm do
       state :checkout, initial: true
@@ -89,6 +92,18 @@ module OddPay
       OddPay::PaymentMethod.where(
         enabled: true,
         payment_type: OddPay::PaymentGatewayService::AVAILABLE_PAYMENT_TYPE_MAP[invoice_type.to_sym]
+      )
+    end
+
+    private
+
+    def ensure_invoice_number
+      update!(number: generate_invoice_number)
+    end
+
+    def generate_invoice_number
+      Time.current.strftime(
+        "#{invoice_type[0].capitalize}%y#{rand(9)}%m#{rand(9)}%d#{rand(9)}%H#{rand(9)}%M%S"
       )
     end
   end

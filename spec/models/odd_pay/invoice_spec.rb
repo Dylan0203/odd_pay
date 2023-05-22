@@ -5,9 +5,8 @@
 #  id                :bigint           not null, primary key
 #  buyer_type        :string
 #  buyer_id          :bigint
-#  billing_email     :string
-#  billing_phone     :string
-#  billing_address   :string
+#  email             :string
+#  contact_phone     :string
 #  title             :string
 #  description       :text
 #  note              :text
@@ -18,6 +17,11 @@
 #  amount_currency   :string           default("USD"), not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  name              :string
+#  company_name      :string
+#  company_ein       :string
+#  address           :jsonb
+#  number            :string
 #
 require 'rails_helper'
 

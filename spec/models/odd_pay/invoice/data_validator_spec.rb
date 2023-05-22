@@ -5,9 +5,9 @@ module OddPay
     let(:invoice) { create :invoice, params }
     let(:params) do
       {
-        billing_email: 'odd@odd.tw',
-        billing_phone: '0987654321',
-        billing_address: "odd's address",
+        email: 'odd@odd.tw',
+        contact_phone: '0987654321',
+        address: { street: "odd's address" },
         invoice_type: :subscription,
         subscription_info: {
           period_type: 'days',
@@ -34,9 +34,9 @@ module OddPay
       include_context 'success'
 
       %i(
-        billing_email
-        billing_phone
-        billing_address
+        email
+        contact_phone
+        address
         invoice_type
         subscription_info
       ).each do |key|

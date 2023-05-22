@@ -21,6 +21,7 @@
 #  company_name      :string
 #  company_ein       :string
 #  address           :jsonb
+#  number            :string
 #
 FactoryBot.define do
   factory :invoice, class: 'OddPay::Invoice' do
