@@ -5,10 +5,7 @@ module OddPay
   class Engine < ::Rails::Engine
     isolate_namespace OddPay
 
-    DEFAULT_URL_OPTIONS = {
-      host: ENV['ngrok_url'] || ENV['app_domain'] || 'app_domain',
-      protocol: ENV['http_protocol'] || 'https'
-    }.freeze
+    config.default_url_options = { host: 'odd-pay.odd.tw', protocol: 'https' }
 
     config.generators do |g|
       g.test_framework :rspec

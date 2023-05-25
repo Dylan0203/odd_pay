@@ -2,6 +2,7 @@ module OddPay
   module NewebPay
     class PostInfoGenerator
       include OddPay::Composables::ApiClient
+      include OddPay::Composables::DefaultUrlOptions
 
       attr_reader :payment_info, :params, :payment_type, :invoice
 
@@ -98,10 +99,6 @@ module OddPay
 
       def normal_payment_method_params
         PAYMENT_METHOD_PARAMS[payment_type]
-      end
-
-      def default_url_optoins
-        @default_url_optoins ||= OddPay::Engine::DEFAULT_URL_OPTIONS
       end
 
       def subscription_post_params
