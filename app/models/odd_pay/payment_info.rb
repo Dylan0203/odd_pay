@@ -102,15 +102,15 @@ module OddPay
           merchant_order_number: OddPay::PaymentGatewayService.generate_merchant_order_number(self)
         )
         process!
-        ignore_processing_payment_infos
+        ignore_checkout_and_processing_payment_infos
         OddPay::PaymentGatewayService.generate_post_info(self, params)
       end
     end
 
     private
 
-    def ignore_processing_payment_infos
-      invoice.payment_infos.processing.each do |payment_info|
+    def ignore_checkout_and_processing_payment_infos
+      invoice.payment_infos.where(aasm_state: [:checkout, :processing]).each do |payment_info|
         payment_info.ignore! if payment_info != self
       end
     end
