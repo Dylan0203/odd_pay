@@ -17,6 +17,7 @@ module OddPay
   RSpec.describe Payment, type: :model do
     # associations
     it { should belong_to(:payment_info) }
+    it { should have_one(:invoice).through(:payment_info) }
     it { should have_one(:uniform_invoice) }
   end
 end

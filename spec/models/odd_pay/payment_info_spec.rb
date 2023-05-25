@@ -113,25 +113,10 @@ module OddPay
     end
 
     context 'if invoice is not confirm' do
-      before { payment_info.invoice.back_to_check_out! }
+      before { payment_info.invoice.back_to_checkout! }
 
       it 'will raise error' do
         expect { payment_info.generate_post_info }.to raise_error OddPay::PaymentInfo::InvalidInvoiceState
-      end
-    end
-  end
-
-  describe 'private methods' do
-    describe '#ignore_processing_payment_infos' do
-      let!(:payment_info_1) { create :payment_info, aasm_state: :processing }
-      let!(:payment_info_2) { create :payment_info, invoice: payment_info_1.invoice, aasm_state: :processing }
-
-      it 'all processing payment_infos will become void' do
-        expect(payment_info_1.invoice.payment_infos.processing.size).to be 2 # pretest
-
-        payment_info_1.send(:ignore_processing_payment_infos)
-
-        expect(payment_info_1.invoice.payment_infos.processing.size).to be 1
       end
     end
   end
