@@ -87,7 +87,10 @@ module OddPay
     end
 
     def validity_period
-      1.send(invoice.period_type)
+      type = invoice.period_type
+      return 1.send(type) if type != :days
+
+      invoice.period_point.send(type)
     end
   end
 end
