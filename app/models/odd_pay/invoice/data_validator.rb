@@ -2,7 +2,7 @@ module OddPay
   class Invoice::DataValidator
     attr_reader :invoice, :errors
 
-    ALLOWED_PERIOD_TYPES = %i(days months years).freeze
+    ALLOWED_PERIOD_TYPES = %i(days weeks months years).freeze
 
     def initialize(invoice)
       @invoice = invoice
@@ -10,28 +10,19 @@ module OddPay
     end
 
     def validate
-      if invoice.confirmed?
-        check_confirmed_info
-      end
+      check_confirmed_info if invoice.confirmed?
     end
 
     def check_confirmed_info
       check_basic_info
       check_invoice_type
       check_subscription_info if invoice.subscription?
-      assign_invoice_amount
     end
 
     def check_basic_info
       errors.add(:email, :blank) if invoice.email.blank?
       errors.add(:contact_phone, :blank) if invoice.contact_phone.blank?
       errors.add(:address, :blank) if invoice.address.blank?
-    end
-
-    def assign_invoice_amount
-      invoice.amount = invoice.items.inject(0) do |amount, item|
-        amount + (item.quantity * item.price)
-      end
     end
 
     def check_invoice_type
@@ -49,7 +40,6 @@ module OddPay
       %i(
         period_point
         period_times
-        grace_period_in_days
       ).each do |key|
         errors.add(:subscription_info, "`#{key}` must grater than 0") if invoice.send(key) <= 0
       end

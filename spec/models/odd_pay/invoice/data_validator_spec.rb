@@ -37,7 +37,6 @@ module OddPay
         email
         contact_phone
         address
-        invoice_type
         subscription_info
       ).each do |key|
         context "if missing attribute `#{key}`" do
@@ -52,7 +51,6 @@ module OddPay
           period_type
           period_point
           period_times
-          grace_period_in_days
         ).each do |key|
           context "if missing data `#{key}`" do
             before { params[:subscription_info][key] = nil }
@@ -68,18 +66,6 @@ module OddPay
           end
 
           include_context 'success'
-        end
-      end
-
-      describe 'amount' do
-        context 'when confirming an invoice' do
-          let!(:item_1) { create :invoice_item, invoice: invoice, price: 100 }
-          let!(:item_2) { create :invoice_item, invoice: invoice, price: 100 }
-
-          it 'amount will have the same amount from items' do
-            invoice.confirm!
-            expect(invoice.amount).to eq Money.from_amount(200)
-          end
         end
       end
     end

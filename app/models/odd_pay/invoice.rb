@@ -33,6 +33,8 @@ module OddPay
     has_many :notifications, through: :payment_infos
     has_many :payments, through: :payment_infos
 
+    scope :after_paid, -> { where.not(aasm_state: [:checkout, :confirmed]) }
+
     enum invoice_type: {
       normal: 0,
       subscription: 1
@@ -52,15 +54,15 @@ module OddPay
       state :canceled
 
       event :back_to_checkout do
-        transitions from: %i(confirmed), to: :checkout
+        transitions from: %i(checkout confirmed), to: :checkout
       end
 
       event :confirm do
-        transitions from: %i(checkout), to: :confirmed
+        transitions from: %i(checkout confirmed), to: :confirmed
       end
 
       event :pay do
-        transitions from: %i(checkout paid overdue), to: :paid
+        transitions from: %i(confirmed paid overdue), to: :paid
       end
 
       event :expire do
@@ -90,7 +92,7 @@ module OddPay
 
     def available_payment_methods
       OddPay::PaymentMethod.where(
-        enabled: true,
+        # enabled: true,
         payment_type: OddPay::PaymentGatewayService::AVAILABLE_PAYMENT_TYPE_MAP[invoice_type.to_sym]
       )
     end
