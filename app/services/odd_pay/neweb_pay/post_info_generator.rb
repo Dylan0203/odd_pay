@@ -208,9 +208,9 @@ module OddPay
         when 'D'
           invoice.period_point.to_s
         when 'W'
-          current_time.day
+          current_time.strftime('%u')
         when 'M'
-          current_time.month
+          current_time.strftime('%d')
         when 'Y'
           current_time.strftime('%m%d')
         end
