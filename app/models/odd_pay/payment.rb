@@ -14,8 +14,13 @@
 module OddPay
   class Payment < ApplicationRecord
     belongs_to :payment_info, touch: true
+    has_one :invoice, through: :payment_info
     has_one :uniform_invoice
 
     monetize :amount_cents
+
+    after_create :action_after_payment_created!
+
+    def action_after_payment_created!; end
   end
 end
