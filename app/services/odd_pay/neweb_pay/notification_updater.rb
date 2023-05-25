@@ -4,12 +4,14 @@ module OddPay
       include OddPay::Composables::ApiClient
       include OddPay::Composables::InformationComposer
 
-      attr_reader :notification, :raw_data
+      attr_reader :notification, :raw_data, :payment_type, :reference
 
       def initialize(notification)
         @gateway_source = notification
         @notification = notification
         @raw_data = notification.raw_data
+        @payment_type = notification.payment_info.payment_type.to_s
+        @reference = notification.reference.to_sym
       end
 
       def self.update(notification)
@@ -40,7 +42,7 @@ module OddPay
       end
 
       def response_type
-        case notification.reference.to_sym
+        case reference
         when :payment_notify
           return api_succeed ? :paid : :failed
         when :async_payment_notify
