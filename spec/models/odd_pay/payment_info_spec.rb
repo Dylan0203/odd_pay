@@ -112,7 +112,7 @@ module OddPay
       end
     end
 
-    context 'if invoice is not confirm' do
+    context 'if invoice is not confirmed' do
       before { payment_info.invoice.back_to_checkout! }
 
       it 'will raise error' do
