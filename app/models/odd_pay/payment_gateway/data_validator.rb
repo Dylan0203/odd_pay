@@ -30,15 +30,12 @@ module OddPay
     end
 
     def check_neweb_pay_gateway_info
-      %w(
-        hash_iv
-        hash_key
-        merchant_id
-      ).each do |key|
-        if gateway_info[key].blank?
-          errors.add(:gateway_info, "missing `#{key}` for #{gateway_provider}")
+      (OddPay::PaymentGatewayService::REQUIRED_GATEWAY_INFO[gateway_provider] || []).
+        each do |key|
+          if gateway_info[key].blank?
+            errors.add(:gateway_info, "missing `#{key}` for #{gateway_provider}")
+          end
         end
-      end
     end
 
     def try_archive_gateway_info_to_history
