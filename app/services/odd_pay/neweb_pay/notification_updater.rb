@@ -1,7 +1,7 @@
 module OddPay
   module NewebPay
     class NotificationUpdater
-      include OddPay::Composables::ApiClient
+      include OddPay::Composables::PaymentGatewayApiClient
       include OddPay::Composables::InformationComposer
 
       attr_reader :notification, :raw_data, :payment_type, :reference

@@ -1,7 +1,7 @@
 module OddPay
   module NewebPay
     class PostInfoGenerator
-      include OddPay::Composables::ApiClient
+      include OddPay::Composables::PaymentGatewayApiClient
       include OddPay::Composables::DefaultUrlOptions
 
       attr_reader :payment_info, :params, :payment_type, :invoice

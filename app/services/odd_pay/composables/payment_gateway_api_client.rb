@@ -1,6 +1,6 @@
 module OddPay
   module Composables
-    module ApiClient
+    module PaymentGatewayApiClient
       InvalidGatewaySource = Class.new(StandardError)
 
       CLIENT_MODE = Rails.env.production? ? :production : :test

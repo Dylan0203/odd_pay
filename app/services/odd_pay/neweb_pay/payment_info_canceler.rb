@@ -1,7 +1,7 @@
 module OddPay
   module NewebPay
     class PaymentInfoCanceler
-      include OddPay::Composables::ApiClient
+      include OddPay::Composables::PaymentGatewayApiClient
 
       attr_reader :payment_info, :payment_type, :invoice, :merchant_order_number, :amount
 
