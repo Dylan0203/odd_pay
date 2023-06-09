@@ -1,0 +1,14 @@
+# Style/TrailingCommaInLiteral:
+#   Enabled: false
+
+Layout/FirstArrayElementLineBreak:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: no_comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: no_comma
