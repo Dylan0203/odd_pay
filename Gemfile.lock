@@ -8,7 +8,7 @@ GIT
 PATH
   remote: .
   specs:
-    odd_pay (0.1.0)
+    odd_pay (0.1.1)
       aasm
       hashids
       money-rails
@@ -89,6 +89,7 @@ GEM
     coderay (1.1.3)
     concurrent-ruby (1.1.10)
     crass (1.0.6)
+    date (3.3.3)
     diff-lcs (1.5.0)
     erubi (1.11.0)
     factory_bot (6.2.1)
@@ -96,7 +97,7 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
-    globalid (1.0.0)
+    globalid (1.1.0)
       activesupport (>= 5.0)
     hashids (1.0.5)
     i18n (1.12.0)
@@ -105,8 +106,11 @@ GEM
     loofah (2.19.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    mail (2.7.1)
+    mail (2.8.1)
       mini_mime (>= 0.1.1)
+      net-imap
+      net-pop
+      net-smtp
     marcel (1.0.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
@@ -120,6 +124,15 @@ GEM
       monetize (~> 1.9)
       money (~> 6.13)
       railties (>= 3.0)
+    net-imap (0.3.4)
+      date
+      net-protocol
+    net-pop (0.1.2)
+      net-protocol
+    net-protocol (0.2.1)
+      timeout
+    net-smtp (0.3.3)
+      net-protocol
     nio4r (2.5.8)
     nokogiri (1.13.8-arm64-darwin)
       racc (~> 1.4)
@@ -213,14 +226,15 @@ GEM
     shoulda-matchers (5.2.0)
       activesupport (>= 5.2.0)
     slop (3.6.0)
-    sprockets (4.1.1)
+    sprockets (4.2.0)
       concurrent-ruby (~> 1.0)
-      rack (> 1, < 3)
+      rack (>= 2.2.4, < 4)
     sprockets-rails (3.4.2)
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     thor (1.2.1)
+    timeout (0.3.2)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     unicode-display_width (1.6.1)
