@@ -3,6 +3,9 @@ module OddPay
     include OddPay::Composables::PaymentGatewayApiClient
 
     AVAILABLE_GATEWAYS = %i(NewebPay).freeze
+    REQUIRED_GATEWAY_INFO = {
+      NewebPay: %i(hash_iv hash_key merchant_id)
+    }.freeze
     NORMAL_PAYMENT_TYPES = %i(
       credit_card
       vacc
