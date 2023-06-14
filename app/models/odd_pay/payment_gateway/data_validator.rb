@@ -32,7 +32,7 @@ module OddPay
     def check_neweb_pay_gateway_info
       (OddPay::PaymentGatewayService::REQUIRED_GATEWAY_INFO[gateway_provider] || []).
         each do |key|
-          if gateway_info[key].blank?
+          if gateway_info[key.to_s].blank?
             errors.add(:gateway_info, "missing `#{key}` for #{gateway_provider}")
           end
         end
