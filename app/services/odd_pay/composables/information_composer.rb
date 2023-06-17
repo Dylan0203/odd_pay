@@ -26,7 +26,10 @@ module OddPay
           card_no: card_no,
           auth_code: auth_code,
           amount: amount,
-          original_info: original_info
+          original_info: original_info,
+          bank_code: bank_code,
+          code_no: code_no,
+          expired_at: expired_at
         }.compact
       end
 

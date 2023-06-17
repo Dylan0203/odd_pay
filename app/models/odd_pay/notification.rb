@@ -26,5 +26,9 @@ module OddPay
     validate { OddPay::Notification::DataValidator.new(self).validate }
 
     scope :has_notify_type, -> { where.not(notify_type: :init) }
+
+    def is_waiting_async_payment_info
+      async_payment_info? && information['expired_at'].in_time_zone > Time.current
+    end
   end
 end
