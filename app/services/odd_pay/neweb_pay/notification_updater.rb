@@ -94,6 +94,24 @@ module OddPay
       def original_info
         decode_data
       end
+
+      def code_no
+        decode_data['CodeNo']
+      end
+
+      def bank_code
+        decode_data['BankCode']
+      end
+
+      def expired_at
+        [
+          decode_data['ExpireDate'],
+          decode_data['ExpireTime']
+        ].
+          compact.
+          join(' ').
+          in_time_zone
+      end
     end
   end
 end
