@@ -22,6 +22,7 @@
 #  company_ein       :string
 #  address           :jsonb
 #  number            :string
+#  completed_at      :datetime
 #
 module OddPay
   class Invoice < ApplicationRecord

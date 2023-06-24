@@ -22,6 +22,7 @@
 #  company_ein       :string
 #  address           :jsonb
 #  number            :string
+#  completed_at      :datetime
 #
 require 'rails_helper'
 
