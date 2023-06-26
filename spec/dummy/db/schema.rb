@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_12_181910) do
+ActiveRecord::Schema.define(version: 2023_06_25_131206) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 2023_05_12_181910) do
     t.text "note"
     t.integer "invoice_type", default: 0
     t.jsonb "subscription_info", default: {}
-    t.string "aasm_state"
+    t.string "invoice_state"
     t.integer "amount_cents", default: 0, null: false
     t.string "amount_currency", default: "USD", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -50,6 +50,9 @@ ActiveRecord::Schema.define(version: 2023_05_12_181910) do
     t.string "company_ein"
     t.jsonb "address", default: {}
     t.string "number"
+    t.datetime "completed_at"
+    t.string "payment_state"
+    t.string "shipment_state"
     t.index ["buyer_type", "buyer_id"], name: "index_odd_pay_invoices_on_buyer"
   end
 

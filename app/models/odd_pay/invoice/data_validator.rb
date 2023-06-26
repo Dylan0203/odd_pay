@@ -44,9 +44,5 @@ module OddPay
         errors.add(:subscription_info, "`#{key}` must grater than 0") if invoice.send(key) <= 0
       end
     end
-
-    def normalized_item_list
-      @normalized_item_list ||= invoice.normalized_item_list
-    end
   end
 end
