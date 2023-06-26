@@ -12,7 +12,7 @@
 #  note              :text
 #  invoice_type      :integer          default("normal")
 #  subscription_info :jsonb
-#  aasm_state        :string
+#  invoice_state     :string
 #  amount_cents      :integer          default(0), not null
 #  amount_currency   :string           default("USD"), not null
 #  created_at        :datetime         not null
@@ -23,6 +23,8 @@
 #  address           :jsonb
 #  number            :string
 #  completed_at      :datetime
+#  payment_state     :string
+#  shipment_state    :string
 #
 FactoryBot.define do
   factory :invoice, class: 'OddPay::Invoice' do

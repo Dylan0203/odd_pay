@@ -12,7 +12,7 @@
 #  note              :text
 #  invoice_type      :integer          default("normal")
 #  subscription_info :jsonb
-#  aasm_state        :string
+#  invoice_state     :string
 #  amount_cents      :integer          default(0), not null
 #  amount_currency   :string           default("USD"), not null
 #  created_at        :datetime         not null
@@ -23,6 +23,8 @@
 #  address           :jsonb
 #  number            :string
 #  completed_at      :datetime
+#  payment_state     :string
+#  shipment_state    :string
 #
 module OddPay
   class Invoice < ApplicationRecord
@@ -34,7 +36,7 @@ module OddPay
     has_many :notifications, through: :payment_infos
     has_many :payments, through: :payment_infos
 
-    scope :after_paid, -> { where.not(aasm_state: [:checkout, :confirmed]) }
+    scope :completed_already, -> { where.not(completed_at: nil) }
 
     enum invoice_type: {
       normal: 0,
@@ -47,31 +49,59 @@ module OddPay
 
     after_create :ensure_invoice_number
 
-    aasm do
-      state :checkout, initial: true
+    aasm(:invoice_state, column: :invoice_state) do
+      state :cart, initial: true
       state :confirmed
-      state :paid
-      state :overdue
+      state :completed
       state :canceled
 
-      event :back_to_checkout do
-        transitions from: %i(checkout confirmed), to: :checkout
+      event :back_to_cart do
+        transitions from: %i(cart confirmed), to: :cart
       end
 
       event :confirm do
-        transitions from: %i(checkout confirmed), to: :confirmed
+        transitions from: %i(cart confirmed), to: :confirmed
       end
 
+      event :complete do
+        transitions from: %i(confirmed), to: :completed
+        after do
+          update! completed_at: Time.current
+        end
+      end
+
+      event :cancel do
+        transitions from: %i(completed), to: :canceled
+      end
+    end
+
+    aasm(:payment_state, column: :payment_state) do
+      state :checkout, initial: true
+      state :paid
+      state :overdue
+      state :void
+
       event :pay do
-        transitions from: %i(confirmed paid overdue), to: :paid
+        transitions from: %i(checkout paid overdue), to: :paid
       end
 
       event :expire do
         transitions from: %i(paid), to: :overdue
       end
+    end
 
-      event :cancel do
-        transitions from: %i(processing paid), to: :canceled
+    aasm(:shipment_state, column: :shipment_state) do
+      state :shipment_pending, initial: true
+      state :shipment_ready
+      state :shipped
+      state :partial_shipped
+
+      event :ship do
+        transitions from: %i(shipment_ready partial_shipped), to: :shipped
+      end
+
+      event :partial_ship do
+        transitions from: %i(shipment_ready), to: :partial_shipped
       end
     end
 
