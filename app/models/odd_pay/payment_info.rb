@@ -26,10 +26,14 @@ module OddPay
     has_many :payments
 
     scope :expired, lambda {
-      paid.
+      joins(:invoice).
+        paid.
         where(
           '? >= (SELECT MAX(ended_at) FROM odd_pay_payments WHERE payment_info_id = odd_pay_payment_infos.id)',
           Time.current
+        ).
+        where(
+          'odd_pay_invoices.invoice_type': 'subscription'
         )
     }
 
@@ -95,7 +99,7 @@ module OddPay
     end
 
     def generate_post_info(params = {})
-      raise InvalidInvoiceState, 'only confirmed invoice can generate post_info' unless invoice.confirmed?
+      raise InvalidInvoiceState, 'only completed invoice can generate post_info' unless invoice.completed?
 
       ActiveRecord::Base.transaction do
         assign_attributes(

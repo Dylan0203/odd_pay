@@ -34,7 +34,10 @@ module OddPay
       before do
         allow_any_instance_of(Spgateway::Client).to receive(:change_subscription_status).and_return(encode_response)
         payment_info.update!(aasm_state: :paid)
-        invoice.update!(aasm_state: :paid)
+        invoice.update!(
+          payment_state: :paid,
+          invoice_state: :completed
+        )
         subject.call
       end
 
