@@ -36,6 +36,7 @@ module OddPay
     has_many :notifications, through: :payment_infos
     has_many :payments, through: :payment_infos
 
+    scope :incomplete, -> { where(completed_at: nil) }
     scope :completed_already, -> { where.not(completed_at: nil) }
 
     enum invoice_type: {
