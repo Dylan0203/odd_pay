@@ -17,6 +17,7 @@ module OddPay
   RSpec.describe Notification, type: :model do
     # associations
     it { should belong_to(:payment_info) }
+    it { should have_one(:invoice).through(:payment_info) }
 
     describe 'scopes' do
       describe 'has_notify_type' do

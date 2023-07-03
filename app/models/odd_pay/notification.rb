@@ -14,6 +14,7 @@
 module OddPay
   class Notification < ApplicationRecord
     belongs_to :payment_info
+    has_one :invoice, through: :payment_info
 
     enum notify_type: {
       init: 0,
