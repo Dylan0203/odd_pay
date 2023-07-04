@@ -13,6 +13,7 @@
 #  description    :text
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  extra_info     :jsonb
 #
 FactoryBot.define do
   factory :invoice_item, class: 'OddPay::Invoice::Item' do

@@ -2,9 +2,10 @@ module OddPay
   class PaymentGatewayService
     include OddPay::Composables::PaymentGatewayApiClient
 
-    AVAILABLE_GATEWAYS = %i(NewebPay).freeze
+    AVAILABLE_GATEWAYS = %i(NewebPay Offline).freeze
     REQUIRED_GATEWAY_INFO = {
-      NewebPay: %i(hash_iv hash_key merchant_id)
+      NewebPay: %i(hash_iv hash_key merchant_id),
+      Offline: %i()
     }.freeze
     NORMAL_PAYMENT_TYPES = %i(
       credit_card
@@ -22,6 +23,7 @@ module OddPay
       cvs
       barcode
       cvscom
+      offline_payment
     ).freeze
     SUBSCRIPTION_PAYMENT_TYPES = %i(
       subscription

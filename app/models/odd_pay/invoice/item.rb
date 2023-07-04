@@ -13,6 +13,7 @@
 #  description    :text
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  extra_info     :jsonb
 #
 module OddPay
   class Invoice::Item < ApplicationRecord
