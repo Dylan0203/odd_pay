@@ -7,7 +7,7 @@ gemspec
 gem 'aasm'
 gem 'money-rails'
 gem 'pg'
-gem 'spgateway_payment_and_invoice_client', github: 'oracle-design/spgateway_payment_and_invoice', tag: '1.0.6'
+gem 'spgateway_payment_and_invoice_client', github: 'oracle-design/spgateway_payment_and_invoice', tag: '1.0.7'
 gem 'hashids'
 
 group :development do
