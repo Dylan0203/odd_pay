@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 module OddPay
-  RSpec.describe OddPay::NewebPay::NotificationUpdater, type: :service do
-    subject { OddPay::NewebPay::NotificationUpdater.new(notification) }
+  RSpec.describe NewebPay::NotificationUpdater, type: :service do
+    subject { NewebPay::NotificationUpdater.new(notification) }
 
     let(:cc_raw_data) do
       {
@@ -41,7 +41,7 @@ module OddPay
         payment_info.save!
       end
 
-      OddPay::Composables::InformationComposer::FETCH_DATA_METHODS.each do |key|
+      Composables::InformationComposer::FETCH_DATA_METHODS.each do |key|
         it "#{key} will get value" do
           expect(subject.send(key)).to be_truthy
         end
@@ -49,7 +49,7 @@ module OddPay
 
       describe '#response_type' do
         def mark_api_succeed_false
-          allow_any_instance_of(OddPay::NewebPay::NotificationUpdater).to receive(:api_succeed).and_return false
+          allow_any_instance_of(NewebPay::NotificationUpdater).to receive(:api_succeed).and_return false
         end
 
         context 'when notification.reference is :payment_notify' do
@@ -113,7 +113,7 @@ module OddPay
         payment_info.save!
       end
 
-      OddPay::Composables::InformationComposer::FETCH_DATA_METHODS.each do |key|
+      Composables::InformationComposer::FETCH_DATA_METHODS.each do |key|
         it "#{key} will get value" do
           expect(subject.send(key)).to be_truthy
         end

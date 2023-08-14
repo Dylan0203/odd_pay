@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 module OddPay
-  RSpec.describe OddPay::PaymentGatewayService::PaymentInfoUpdater, type: :service do
-    subject { OddPay::PaymentGatewayService::PaymentInfoUpdater.new(payment_info) }
+  RSpec.describe PaymentGatewayService::PaymentInfoUpdater, type: :service do
+    subject { PaymentGatewayService::PaymentInfoUpdater.new(payment_info) }
 
     let(:payment_info) { create :payment_info }
     let!(:notification) { create :notification, payment_info: payment_info, information: info_data, notify_type: :paid }

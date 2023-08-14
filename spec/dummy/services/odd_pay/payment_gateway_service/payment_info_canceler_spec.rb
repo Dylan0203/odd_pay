@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 module OddPay
-  RSpec.describe OddPay::NewebPay::PaymentInfoCanceler, type: :service do
-    subject { OddPay::NewebPay::PaymentInfoCanceler.new(payment_info) }
+  RSpec.describe NewebPay::PaymentInfoCanceler, type: :service do
+    subject { NewebPay::PaymentInfoCanceler.new(payment_info) }
 
     let(:payment_info) { create :payment_info }
     let(:invoice) { payment_info.invoice }
