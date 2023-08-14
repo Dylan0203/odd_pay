@@ -78,12 +78,22 @@ module OddPay
 
     aasm(:payment_state, column: :payment_state) do
       state :checkout, initial: true
+      state :balance_due
+      state :credit_owed
       state :paid
       state :overdue
       state :void
 
+      event :balance_owe do
+        transitions from: %i(checkout), to: :balance_due
+      end
+
+      event :credit_owe do
+        transitions from: %i(checkout paid balance_due), to: :credit_owed
+      end
+
       event :pay do
-        transitions from: %i(checkout paid overdue), to: :paid
+        transitions from: %i(checkout balance_due paid overdue), to: :paid, guard: :payable?
       end
 
       event :expire do
@@ -129,6 +139,10 @@ module OddPay
       )
     end
 
+    def unpaid_amount
+      amount - Money.new(payment_infos.paid.sum(:amount_cents))
+    end
+
     private
 
     def ensure_invoice_number
@@ -139,6 +153,15 @@ module OddPay
       Time.current.strftime(
         "#{invoice_type[0].capitalize}%y#{rand(9)}%m#{rand(9)}%d#{rand(9)}%H#{rand(9)}%M%S"
       )
+    end
+
+    def payable?
+      case invoice_type
+      when 'subscription'
+        true
+      when 'normal'
+        !paid?
+      end
     end
   end
 end

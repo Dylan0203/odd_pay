@@ -1,10 +1,10 @@
 module OddPay::Concerns::IdHashable
   extend ActiveSupport::Concern
 
-  included do
-    MIN_HASH_LENGTH = 6
-    SALT = Rails.application.secrets.secret_key_base
+  MIN_HASH_LENGTH = 6
+  SALT = Rails.application.secrets.secret_key_base
 
+  included do
     def hashid
       self.class.hashids.encode(id)
     end

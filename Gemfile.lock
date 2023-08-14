@@ -8,7 +8,7 @@ GIT
 PATH
   remote: .
   specs:
-    odd_pay (0.1.10)
+    odd_pay (0.1.11)
       aasm
       hashids
       money-rails
