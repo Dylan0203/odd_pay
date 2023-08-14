@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 module OddPay
-  RSpec.describe OddPay::PaymentGatewayService::PaymentInfoExpireUpdater, type: :service do
-    subject { OddPay::PaymentGatewayService::PaymentInfoExpireUpdater.new(payment_info) }
+  RSpec.describe PaymentGatewayService::PaymentInfoExpireUpdater, type: :service do
+    subject { PaymentGatewayService::PaymentInfoExpireUpdater.new(payment_info) }
 
     let(:payment_info) { create :payment_info }
     let!(:payment) { create :payment, payment_info: payment_info, ended_at: current_time }

@@ -51,6 +51,9 @@ module OddPay
         },
         cvscom: {
           CVSCOM: 2
+        },
+        linepay: {
+          LINEPAY: 1
         }
       }.freeze
 
