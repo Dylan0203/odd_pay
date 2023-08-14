@@ -14,11 +14,23 @@ module OddPay
     def update
       case latest_payment_info.aasm_state.to_sym
       when :paid
-        invoice.pay! unless invoice.paid?
+        update_payment_state
       when :overdue
         invoice.expire! unless invoice.overdue?
       when :canceled
         invoice.cancel! unless invoice.canceled?
+      end
+    end
+
+    def update_payment_state
+      balance = invoice.unpaid_amount
+      case
+      when balance.zero?
+        invoice.pay! unless invoice.paid?
+      when balance > 0
+        invoice.balance_owe! unless invoice.balance_due?
+      when balance < 0
+        invoice.credit_owe! unless invoice.credit_owed?
       end
     end
   end

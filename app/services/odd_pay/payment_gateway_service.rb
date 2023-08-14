@@ -36,6 +36,13 @@ module OddPay
       normal: NORMAL_PAYMENT_TYPES,
       subscription: SUBSCRIPTION_PAYMENT_TYPES
     }.freeze
+    PAYMENT_TYPE_AMOUNT_LIMIT_MAP = {
+      NewebPay: {
+        default: 199_999,
+        vacc: 49_999,
+        webatm: 49_999
+      }
+    }.freeze
 
     def initialize(gateway_source)
       @gateway_source = gateway_source
