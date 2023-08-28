@@ -133,7 +133,7 @@ module OddPay
           NotifyURL: notify_url,
           CustomerURL: async_payment_url,
           ClientBackURL: back_url,
-          ExpireDate: nil # TODO:
+          ExpireDate: expire_date
         }.compact
       end
 
@@ -157,7 +157,13 @@ module OddPay
       end
 
       def expire_date
-        params[:expire_date]
+        case payment_type
+        when :cvs, :vacc, :barcode, :cvscom
+          # 藍新只能接受到日期參數，無法設定時段
+          params[:expire_date].in_time_zone.strftime('%Y%m%d')
+        else
+          nil
+        end
       end
 
       def email
