@@ -24,6 +24,7 @@ module OddPay
       barcode
       cvscom
       offline_payment
+      linepay
     ).freeze
     SUBSCRIPTION_PAYMENT_TYPES = %i(
       subscription

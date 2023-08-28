@@ -17,6 +17,7 @@ module OddPay
       cvs
       barcode
       cvscom
+      linepay
     ).freeze
   end
 end
