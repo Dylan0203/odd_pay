@@ -22,8 +22,8 @@ module OddPay
 
     belongs_to :invoice, touch: true
     belongs_to :payment_method
-    has_many :notifications
-    has_many :payments
+    has_many :notifications, dependent: :destroy
+    has_many :payments, dependent: :destroy
 
     scope :expired, lambda {
       joins(:invoice).

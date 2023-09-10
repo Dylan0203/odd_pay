@@ -31,8 +31,8 @@ module OddPay
     include AASM
 
     belongs_to :buyer, polymorphic: true, touch: true, optional: true
-    has_many :items, class_name: 'OddPay::Invoice::Item'
-    has_many :payment_infos
+    has_many :items, class_name: 'OddPay::Invoice::Item', dependent: :destroy
+    has_many :payment_infos, dependent: :destroy
     has_many :notifications, through: :payment_infos
     has_many :payments, through: :payment_infos
 
