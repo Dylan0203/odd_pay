@@ -157,10 +157,12 @@ module OddPay
       end
 
       def expire_date
+        date = params[:expire_date]
+        return unless date
         case payment_type
         when :cvs, :vacc, :barcode, :cvscom
           # 藍新只能接受到日期參數，無法設定時段
-          params[:expire_date].in_time_zone.strftime('%Y%m%d')
+          date.in_time_zone.strftime('%Y%m%d')
         else
           nil
         end
