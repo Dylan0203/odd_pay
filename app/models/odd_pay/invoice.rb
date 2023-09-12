@@ -25,6 +25,8 @@
 #  completed_at      :datetime
 #  payment_state     :string
 #  shipment_state    :string
+#  paid_at           :datetime
+#  expired_at        :datetime
 #
 module OddPay
   class Invoice < ApplicationRecord
