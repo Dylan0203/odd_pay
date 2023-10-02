@@ -27,19 +27,6 @@ module OddPay
     has_many :payments, dependent: :destroy
     has_many :refunds, dependent: :destroy
 
-    scope :expired, lambda {
-      joins(:invoice).
-        paid.
-        where(
-          '? >= (SELECT MAX(ended_at) FROM odd_pay_payments WHERE payment_info_id = odd_pay_payment_infos.id)',
-          Time.current
-        ).
-        where(
-          'odd_pay_invoices.invoice_type': 'subscription'
-        )
-    }
-    has_many :refunds, dependent: :destroy
-
     monetize :amount_cents
 
     validate { OddPay::PaymentInfo::DataValidator.new(self).validate }
