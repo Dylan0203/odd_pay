@@ -18,9 +18,5 @@ module OddPay
     has_one :uniform_invoice
 
     monetize :amount_cents
-
-    after_create :action_after_payment_created!
-
-    def action_after_payment_created!; end
   end
 end

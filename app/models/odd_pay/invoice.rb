@@ -96,10 +96,16 @@ module OddPay
 
       event :pay do
         transitions from: %i(checkout balance_due paid overdue), to: :paid, guard: :payable?
+        after do
+          action_after_paid
+        end
       end
 
       event :expire do
         transitions from: %i(paid), to: :overdue
+        after do
+          action_after_overdue
+        end
       end
     end
 
@@ -158,12 +164,16 @@ module OddPay
     end
 
     def payable?
-      case invoice_type
-      when 'subscription'
+      case
+      when subscription?
         true
-      when 'normal'
+      when normal?
         !paid?
       end
     end
+
+    def action_after_paid; end
+
+    def action_after_overdue; end
   end
 end
