@@ -1,18 +1,24 @@
 # == Schema Information
 #
-# Table name: odd_pay_payments
+# Table name: odd_pay_refunds
 #
 #  id              :bigint           not null, primary key
 #  payment_info_id :bigint
 #  amount_cents    :integer          default(0), not null
 #  amount_currency :string           default("USD"), not null
-#  paid_at         :datetime
-#  expired_at      :datetime
+#  aasm_state      :string
+#  refunded_at     :datetime
+#  bank_code       :string
+#  account         :string
+#  recipient       :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #
-FactoryBot.define do
-  factory :payment, class: 'OddPay::Payment' do
-    payment_info
+require 'rails_helper'
+
+module OddPay
+  RSpec.describe Refund, type: :model do
+    # associations
+    it { should belong_to(:payment_info) }
   end
 end

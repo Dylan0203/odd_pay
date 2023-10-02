@@ -12,6 +12,7 @@
 #  gateway_info          :jsonb
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  refund_state          :string
 #
 require 'rails_helper'
 
@@ -22,6 +23,7 @@ module OddPay
     it { should belong_to(:payment_method).without_validating_presence }
     it { should have_many(:notifications) }
     it { should have_many(:payments) }
+    it { should have_many(:refunds) }
 
     describe 'scopes' do
       describe '.expired' do

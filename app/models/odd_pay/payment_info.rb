@@ -12,6 +12,7 @@
 #  gateway_info          :jsonb
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  refund_state          :string
 #
 module OddPay
   class PaymentInfo < ApplicationRecord
@@ -24,6 +25,7 @@ module OddPay
     belongs_to :payment_method
     has_many :notifications, dependent: :destroy
     has_many :payments, dependent: :destroy
+    has_many :refunds, dependent: :destroy
 
     scope :expired, lambda {
       joins(:invoice).
@@ -36,6 +38,7 @@ module OddPay
           'odd_pay_invoices.invoice_type': 'subscription'
         )
     }
+    has_many :refunds, dependent: :destroy
 
     monetize :amount_cents
 
