@@ -21,15 +21,27 @@ module OddPay
       paid: 1,
       failed: 2,
       canceled: 3,
-      async_payment_info: 4
+      async_payment_info: 4,
+      collected: 5,
+      deauthorized: 6,
+      refunded: 7,
+      current_payment_info: 8
     }
 
     validate { OddPay::Notification::DataValidator.new(self).validate }
 
-    scope :has_notify_type, -> { where.not(notify_type: :init) }
+    scope :has_notify_type, -> { where.not(notify_type: %i(init current_payment_info)) }
 
     def is_waiting_async_payment_info
       async_payment_info? && information['expired_at'].in_time_zone > Time.current
+    end
+
+    def update_info
+      OddPay::PaymentGatewayService.update_notification(self)
+    end
+
+    def compose_info
+      OddPay::PaymentGatewayService.parse_notification(self)
     end
   end
 end

@@ -24,6 +24,12 @@ module OddPay
       barcode
       cvscom
       offline_payment
+      linepay
+      taiwan_pay
+      esun_wallet
+      ezpay
+      alipay
+      wechat_pay
     ).freeze
     SUBSCRIPTION_PAYMENT_TYPES = %i(
       subscription
@@ -72,17 +78,12 @@ module OddPay
       OddPay::PaymentGatewayService::InvoiceUpdater.update(invoice)
     end
 
-    def self.cancel_invoice(invoice)
-      last_payment_info = invoice.payment_infos.paid.last
-      new(last_payment_info).cancel_payment_info
+    def self.apply_refund(payment, amount: nil)
+      new(payment).apply_refund(amount)
     end
 
-    def self.expired_payment_infos_processer
-      OddPay::PaymentInfo.
-        expired.
-        find_each(batch_size: 100) do |payment_info|
-          OddPay::PaymentGatewayService::PaymentInfoExpireUpdater.update(payment_info)
-        end
+    def self.cancel_payment_info(payment_info, amount: nil)
+      new(payment_info).cancel_payment_info(amount)
     end
 
     def generate_merchant_order_number
@@ -109,10 +110,16 @@ module OddPay
         parse_notification(gateway_source)
     end
 
-    def cancel_payment_info
+    def cancel_payment_info(amount)
       %Q(OddPay::#{gateway_provider}::PaymentInfoCanceler).
         constantize.
-        call(gateway_source)
+        call(gateway_source, amount: amount)
+    end
+
+    def apply_refund(amount)
+      %Q(OddPay::#{gateway_provider}::RefundApplier).
+        constantize.
+        call(gateway_source, amount)
     end
   end
 end

@@ -16,9 +16,9 @@ module OddPay
       )
 
       if notification.previously_new_record?
-        OddPay::PaymentGatewayService.update_notification(notification)
-        OddPay::PaymentGatewayService.update_payment_info(payment_info)
-        OddPay::PaymentGatewayService.update_invoice(payment_info.invoice)
+        notification.update_info
+        payment_info.update_info
+        payment_info.invoice.update_info
       end
 
       @info = notification.information

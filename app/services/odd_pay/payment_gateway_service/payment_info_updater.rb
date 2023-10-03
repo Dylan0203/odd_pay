@@ -1,12 +1,13 @@
 module OddPay
   class PaymentGatewayService::PaymentInfoUpdater
-    attr_reader :payment_info, :latest_notification, :info, :invoice
+    attr_reader :payment_info, :latest_notification, :info, :invoice, :payments
 
     def initialize(payment_info)
       @payment_info = payment_info
-      @latest_notification = payment_info.notifications.has_notify_type.last
+      @latest_notification = payment_info.notifications.has_notify_type.last || OddPay::Notification.new
       @info = latest_notification.information.with_indifferent_access
       @invoice = payment_info.invoice
+      @payments = payment_info.payments
     end
 
     def self.update(payment_info)
@@ -14,15 +15,36 @@ module OddPay
     end
 
     def update
+      process_last_notification
+      update_refund_state
+    end
+
+    def process_last_notification
       case latest_notification.notify_type.to_sym
       when :paid
-        pay_via_payment_type if payment_info.may_pay?
+        pay_via_payment_type
       when :failed
-        payment_info.fail! unless payment_info.failed?
+        payment_info.fail! if payment_info.may_fail?
       when :canceled
-        payment_info.cancel! unless payment_info.canceled?
+        payment_info.cancel! if payment_info.may_cancel?
       when :async_payment_info
-        payment_info.wait!
+        payment_info.wait! if payment_info.may_wait?
+      when :refunded, :deauthorized
+        try_to_create_refund_record
+      when :collected, :current_payment_info
+      end
+    end
+
+    def update_refund_state
+      refunds = payment_info.refunds.done
+      return unless refunds.exists?
+
+      balance = payments.sum(:amount_cents) - refunds.sum(:amount_cents)
+
+      if balance > 0
+        payment_info.partial_refund! if payment_info.may_partial_refund?
+      else
+        payment_info.refund! if payment_info.may_refund?
       end
     end
 
@@ -30,43 +52,24 @@ module OddPay
 
     def pay_via_payment_type
       ActiveRecord::Base.transaction do
+        last_payment = payments.last
+        current_payment = find_for_create_payment
+
+        return if last_payment == current_payment
+
         if invoice.subscription?
-          process_subscription_payment
-        else
-          find_for_create_payment
+          current_payment.update!(expired_at: subscription_expired_time)
         end
 
-        balance = paid_amount - payment_info.amount
-
-        if balance.zero?
-          payment_info.pay!
-        elsif balance < 0
-          payment_info.balance_owe!
-        elsif balance > 0
-          payment_info.credit_owe!
-        end
+        payment_info.pay!
       end
     end
 
     def find_for_create_payment
       payments.find_or_create_by!(
-        started_at: paid_at,
+        paid_at: paid_at,
         amount_cents: paid_amount.fractional
       )
-    end
-
-    def process_subscription_payment
-      last_payment = payments.last
-
-      current_payment = find_for_create_payment
-
-      return if last_payment == current_payment
-
-      current_payment.update!(ended_at: expired_time(last_payment))
-    end
-
-    def payments
-      payment_info.payments
     end
 
     def paid_amount
@@ -77,20 +80,22 @@ module OddPay
       @paid_at ||= Time.zone.parse(info[:paid_at])
     end
 
-    def expired_time(last_payment)
-      expired_at = last_payment.try(:ended_at)
+    def subscription_expired_time
+      reference_time = if invoice.expired?
+                         paid_at
+                       else
+                         invoice.expired_at
+                       end
 
-      is_new_period = !expired_at || (expired_at + invoice.grace_period_in_days) <= Time.current
-      return paid_at + validity_period if is_new_period
-
-      expired_at + validity_period
+      reference_time + invoice.subscription_duration
     end
 
-    def validity_period
-      type = invoice.period_type
-      return 1.send(type) if type != :days
-
-      invoice.period_point.send(type)
+    def try_to_create_refund_record
+      payment_info.refunds.find_or_create_by!(
+        amount_cents: Money.from_amount(info[:amount].to_f).fractional,
+        aasm_state: :done,
+        refunded_at: latest_notification.created_at
+      )
     end
   end
 end

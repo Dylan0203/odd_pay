@@ -17,6 +17,21 @@ module OddPay
       cvs
       barcode
       cvscom
+      linepay
+      taiwan_pay
+      esun_wallet
+      ezpay
+      alipay
+      wechat_pay
+    ).freeze
+
+    EWALLET_PAYMENT_TYPES = %i(
+      linepay
+      taiwan_pay
+      esun_wallet
+      ezpay
+      alipay
+      wechat_pay
     ).freeze
   end
 end

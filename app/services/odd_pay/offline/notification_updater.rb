@@ -37,11 +37,11 @@ module OddPay
       def response_type
         case reference
         when :payment_notify
-          return api_succeed ? :paid : :failed
-        when :async_payment_notify
-          return :async_payment_info if api_succeed
+          return :paid
         when :cancel_notify
-          return :canceled if api_succeed
+          return :canceled
+        when :refund_notify
+          return :refunded
         end
 
         :init

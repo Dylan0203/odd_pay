@@ -1,14 +1,14 @@
 GIT
   remote: https://github.com/oracle-design/spgateway_payment_and_invoice.git
-  revision: 431558f51933b44e3380a430eb5dd9b6a06670cc
-  tag: 1.0.7
+  revision: 6563cc9b299161573186a33151ba39a3ab9b8427
+  tag: 1.0.8
   specs:
-    spgateway_payment_and_invoice_client (1.0.7)
+    spgateway_payment_and_invoice_client (1.0.8)
 
 PATH
   remote: .
   specs:
-    odd_pay (0.1.11)
+    odd_pay (0.1.12)
       aasm
       hashids
       money-rails
