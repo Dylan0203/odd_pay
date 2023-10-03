@@ -3,8 +3,6 @@ module OddPay
     module PaymentGatewayApiClient
       InvalidGatewaySource = Class.new(StandardError)
 
-      CLIENT_MODE = Rails.env.production? ? :production : :test
-
       def gateway_source
         raise InvalidGatewaySource, 'Please provide @gateway_source' unless @gateway_source
         @gateway_source
@@ -34,11 +32,11 @@ module OddPay
           gateway_info = payment_gateway.gateway_info.with_indifferent_access
           case gateway_provider
           when :NewebPay
-            Spgateway::Client.new(
+            Spgateway::ClientV2.new(
               merchant_id: gateway_info[:merchant_id],
               hash_key: gateway_info[:hash_key],
               hash_iv: gateway_info[:hash_iv],
-              mode: CLIENT_MODE
+              mode: Rails.env.production? ? :production : :test
             )
           end
         end

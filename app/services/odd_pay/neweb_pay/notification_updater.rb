@@ -30,65 +30,104 @@ module OddPay
       end
 
       def decode_data
-        @decode_data ||= api_client.decode_period_params(
-          raw_data['TradeInfo'] ||
-            raw_data['Period'] ||
-            raw_data['period']
-        )
+        @decode_data ||= begin
+          case reference
+          when :deauthorize_notify, :payment_info_notify
+            data = raw_data['Result']
+            data.class == Hash ? data : {} # there might be an array
+          else
+            data = raw_data['TradeInfo'] ||
+              raw_data['Period'] ||
+              raw_data['period'] ||
+              raw_data['EncryptData']
+
+            data.present? ? api_client.decode_json_data(data) : raw_data
+          end.with_indifferent_access
+        end
       end
 
       def api_succeed
-        decode_data["Status"] == "SUCCESS"
-      end
-
-      def response_type
         case reference
-        when :payment_notify
-          return api_succeed ? :paid : :failed
-        when :async_payment_notify
-          return :async_payment_info if api_succeed
-        when :cancel_notify
-          return :canceled if api_succeed
+        when :deauthorize_notify, :payment_info_notify
+          raw_data['Status'] == "SUCCESS"
+        when :refund_notify
+          decode_data[:Status] == "SUCCESS" ||
+            raw_data['Status'] == '1000'
+        else
+          decode_data[:Status] == "SUCCESS"
         end
-
-        :init
-      end
-
-      def message
-        decode_data['Message']
       end
 
       def is_valid
-        true
+        case reference
+        when :deauthorize_notify, :payment_info_notify
+          return true unless api_succeed # no check code if not success
+
+          api_client.verify_check_code(raw_data['Result'])
+        else
+          true
+        end
+      end
+
+      def response_type
+        if api_succeed
+          case reference
+          when :payment_notify
+            :paid
+          when :async_payment_notify
+            :async_payment_info
+          when :cancel_notify
+            :canceled
+          when :collect_notify
+            :collected
+          when :deauthorize_notify
+            :deauthorized
+          when :refund_notify
+            :refunded
+          when :payment_info_notify
+            :current_payment_info
+          end
+        else
+          reference == :payment_notify ? :failed : :init
+        end
+      end
+
+      def message
+        decode_data.dig(:Message) ||
+          raw_data['Message']
       end
 
       def paid_at
         Time.zone.parse(
-          decode_data["Result[AuthTime]"] ||
-            decode_data["Result[AuthDate]"] ||
-            decode_data['PayTime'] ||
+          decode_data.dig(:Result, :AuthTime) ||
+            decode_data.dig(:Result, :AuthDate) ||
+            decode_data.dig(:Result, :PayTime) ||
             ''
         )
       end
 
       def card_no
-        decode_data["Result[CardNo]"] ||
-          [
-            decode_data['Card6No'],
-            decode_data['Card4No']
-          ].
-            compact.
-            join('******')
+        result = decode_data.dig(:Result, :CardNo) ||
+                   [
+                     decode_data.dig(:Result, :Card6No),
+                     decode_data.dig(:Result, :Card4No)
+                   ].
+                     compact.
+                     join('******')
+        result.present? ? result : nil
       end
 
       def auth_code
-        decode_data["Result[AuthCode]"] || decode_data['Auth']
+        decode_data.dig(:Result, :AuthCode) ||
+          decode_data.dig(:Result, :Auth)
       end
 
       def amount
-        decode_data["Result[PeriodAmt]"] ||
-          decode_data["Result[AuthAmt]"] ||
-          decode_data['Amt']
+        decode_data.dig(:Result, :PeriodAmt) ||
+          decode_data.dig(:Result, :AuthAmt) ||
+          decode_data.dig(:Result, :Amt) ||
+          decode_data.dig(:Amt) ||
+          decode_data.dig(:Result, :RefundAmount)
       end
 
       def original_info
@@ -96,17 +135,17 @@ module OddPay
       end
 
       def code_no
-        decode_data['CodeNo']
+        decode_data.dig(:Result, :CodeNo)
       end
 
       def bank_code
-        decode_data['BankCode']
+        decode_data.dig(:Result, :BankCode)
       end
 
       def expired_at
         [
-          decode_data['ExpireDate'],
-          decode_data['ExpireTime']
+          decode_data.dig(:Result, :ExpireDate),
+          decode_data.dig(:Result, :ExpireTime)
         ].
           compact.
           join(' ').

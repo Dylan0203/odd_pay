@@ -4,7 +4,7 @@ module OddPay
 
     def initialize(payment_info)
       @payment_info = payment_info
-      @latest_notification = payment_info.notifications.has_notify_type.last
+      @latest_notification = payment_info.notifications.has_notify_type.last || OddPay::Notification.new
       @info = latest_notification.information.with_indifferent_access
       @invoice = payment_info.invoice
       @payments = payment_info.payments
