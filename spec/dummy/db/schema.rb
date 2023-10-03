@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_04_064124) do
+ActiveRecord::Schema.define(version: 2023_10_03_092724) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,8 @@ ActiveRecord::Schema.define(version: 2023_07_04_064124) do
     t.datetime "completed_at"
     t.string "payment_state"
     t.string "shipment_state"
+    t.datetime "paid_at"
+    t.datetime "expired_at"
     t.index ["buyer_type", "buyer_id"], name: "index_odd_pay_invoices_on_buyer"
   end
 
@@ -61,7 +63,7 @@ ActiveRecord::Schema.define(version: 2023_07_04_064124) do
     t.bigint "payment_info_id"
     t.jsonb "raw_data"
     t.integer "notify_type", default: 0
-    t.jsonb "information"
+    t.jsonb "information", default: {}
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "reference"
@@ -87,6 +89,7 @@ ActiveRecord::Schema.define(version: 2023_07_04_064124) do
     t.jsonb "gateway_info", default: {}
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "refund_state"
     t.index ["invoice_id"], name: "index_odd_pay_payment_infos_on_invoice_id"
     t.index ["payment_method_id"], name: "index_odd_pay_payment_infos_on_payment_method_id"
   end
@@ -106,11 +109,25 @@ ActiveRecord::Schema.define(version: 2023_07_04_064124) do
     t.bigint "payment_info_id"
     t.integer "amount_cents", default: 0, null: false
     t.string "amount_currency", default: "USD", null: false
-    t.datetime "started_at"
-    t.datetime "ended_at"
+    t.datetime "paid_at"
+    t.datetime "expired_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["payment_info_id"], name: "index_odd_pay_payments_on_payment_info_id"
+  end
+
+  create_table "odd_pay_refunds", force: :cascade do |t|
+    t.bigint "payment_info_id"
+    t.integer "amount_cents", default: 0, null: false
+    t.string "amount_currency", default: "USD", null: false
+    t.string "aasm_state"
+    t.datetime "refunded_at"
+    t.string "bank_code"
+    t.string "account"
+    t.string "recipient"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["payment_info_id"], name: "index_odd_pay_refunds_on_payment_info_id"
   end
 
   create_table "odd_pay_uniform_invoice_credit_notes", force: :cascade do |t|
@@ -165,6 +182,7 @@ ActiveRecord::Schema.define(version: 2023_07_04_064124) do
   add_foreign_key "odd_pay_payment_infos", "odd_pay_payment_methods", column: "payment_method_id"
   add_foreign_key "odd_pay_payment_methods", "odd_pay_payment_gateways", column: "payment_gateway_id"
   add_foreign_key "odd_pay_payments", "odd_pay_payment_infos", column: "payment_info_id"
+  add_foreign_key "odd_pay_refunds", "odd_pay_payment_infos", column: "payment_info_id"
   add_foreign_key "odd_pay_uniform_invoice_credit_notes", "odd_pay_uniform_invoices", column: "uniform_invoice_id"
   add_foreign_key "odd_pay_uniform_invoices", "odd_pay_payments", column: "payment_id"
   add_foreign_key "odd_pay_uniform_invoices", "odd_pay_uniform_invoice_gateways", column: "uniform_invoice_gateway_id"

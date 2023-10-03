@@ -25,6 +25,8 @@
 #  completed_at      :datetime
 #  payment_state     :string
 #  shipment_state    :string
+#  paid_at           :datetime
+#  expired_at        :datetime
 #
 require 'rails_helper'
 
@@ -35,5 +37,6 @@ module OddPay
     it { should have_many(:payment_infos) }
     it { should have_many(:notifications).through(:payment_infos) }
     it { should have_many(:payments).through(:payment_infos) }
+    it { should have_many(:refunds).through(:payment_infos) }
   end
 end

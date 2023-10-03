@@ -3,20 +3,20 @@ module OddPay
     class PaymentInfoCanceler
       include OddPay::Composables::PaymentGatewayApiClient
 
-      attr_reader :payment_info, :payment_type, :invoice, :amount
+      attr_reader :payment_info, :invoice, :amount
 
-      def initialize(payment_info, amount: nil)
-        @payment_info = payment_info
+      def initialize(payment_info, amount)
+        @payment_info = payment.payment_info
         @invoice = payment_info.invoice
         @amount = amount || payment_info.amount.to_i
       end
 
-      def self.call(payment_info)
-        new(payment_info).call
+      def self.call(payment_info, amount: nil)
+        new(payment_info, amount).call
       end
 
       def call
-        payment_info.notifications.create!(
+        notification = payment_info.notifications.create!(
           raw_data: {
             Message: 'Payment Canceled',
             Amount: amount
@@ -24,9 +24,8 @@ module OddPay
           reference: :cancel_notify
         )
 
-        OddPay::PaymentGatewayService.update_notification(notifications.last)
-        OddPay::PaymentGatewayService.update_payment_info(payment_info)
-        OddPay::PaymentGatewayService.update_invoice(invoice)
+        notification.update_info
+        payment_info.update_info
       end
     end
   end

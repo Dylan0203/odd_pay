@@ -12,6 +12,7 @@
 #  gateway_info          :jsonb
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  refund_state          :string
 #
 module OddPay
   class PaymentInfo < ApplicationRecord
@@ -22,20 +23,9 @@ module OddPay
 
     belongs_to :invoice, touch: true
     belongs_to :payment_method
-    has_many :notifications
-    has_many :payments
-
-    scope :expired, lambda {
-      joins(:invoice).
-        paid.
-        where(
-          '? >= (SELECT MAX(ended_at) FROM odd_pay_payments WHERE payment_info_id = odd_pay_payment_infos.id)',
-          Time.current
-        ).
-        where(
-          'odd_pay_invoices.invoice_type': 'subscription'
-        )
-    }
+    has_many :notifications, dependent: :destroy
+    has_many :payments, dependent: :destroy
+    has_many :refunds, dependent: :destroy
 
     monetize :amount_cents
 
@@ -45,12 +35,9 @@ module OddPay
       state :checkout, initial: true
       state :processing
       state :waiting_async_payment
-      state :balance_due
-      state :credit_owed
       state :paid
-      state :overdue
-      state :failed
       state :canceled
+      state :failed
       state :void
 
       event :process do
@@ -61,32 +48,35 @@ module OddPay
         transitions from: %i(processing waiting_async_payment), to: :waiting_async_payment
       end
 
-      event :balance_owe do
-        transitions from: %i(processing waiting_async_payment), to: :balance_due
-      end
-
-      event :credit_owe do
-        transitions from: %i(processing waiting_async_payment), to: :credit_owed
-      end
-
       event :pay do
-        transitions from: %i(processing paid overdue), to: :paid
-      end
-
-      event :expire do
-        transitions from: %i(paid), to: :overdue
+        transitions from: %i(processing paid), to: :paid
       end
 
       event :fail do
         transitions from: %i(processing), to: :failed
       end
 
+      # only for subscription
       event :cancel do
-        transitions from: %i(checkout processing paid), to: :canceled
+        transitions from: %i(paid), to: :canceled
       end
 
       event :ignore do
-        transitions from: %i(processing), to: :void
+        transitions from: %i(checkout processing), to: :void
+      end
+    end
+
+    aasm(:refund_state, column: :refund_state) do
+      state :init, initial: true
+      state :partial_refunded
+      state :refunded
+
+      event :partial_refund do
+        transitions from: %i(init), to: :partial_refunded
+      end
+
+      event :refund do
+        transitions from: %i(init partial_refunded), to: :refunded
       end
     end
 
@@ -109,6 +99,10 @@ module OddPay
         ignore_checkout_and_processing_payment_infos
         OddPay::PaymentGatewayService.generate_post_info(self, params)
       end
+    end
+
+    def update_info
+      OddPay::PaymentGatewayService.update_payment_info(self)
     end
 
     private

@@ -54,17 +54,22 @@ module OddPay
         },
         linepay: {
           LINEPAY: 1
+        },
+        taiwan_pay: {
+          TAIWANPAY: 1
+        },
+        esun_wallet: {
+          ESUNWALLET: 1
+        },
+        ezpay: {
+          EZPAY: 1
+        },
+        alipay: {
+          EZPALIPAY: 1
+        },
+        wechat_pay: {
+          EZPWECHAT: 1
         }
-      }.freeze
-
-      SUBSCRIPTION_API_END_POINTS = {
-        test: 'https://ccore.newebpay.com/MPG/period',
-        production: 'https://core.newebpay.com/MPG/period'
-      }.freeze
-
-      NORMAL_PAYMENT_API_END_POINTS = {
-        test: 'https://ccore.newebpay.com/MPG/mpg_gateway',
-        production: 'https://core.newebpay.com/MPG/mpg_gateway'
       }.freeze
 
       def initialize(payment_info, params)
@@ -80,17 +85,16 @@ module OddPay
       end
 
       def call
-        api_mode = api_client.options[:mode]
         case payment_type
         when :subscription
           {
-            post_url: SUBSCRIPTION_API_END_POINTS[api_mode],
-            post_params: api_client.generate_period_params(subscription_post_params)
+            post_url: api_client.api_url_for(:period),
+            post_params: api_client.generate_credit_card_period_params(subscription_post_params)
           }
         else
           {
-            post_url: NORMAL_PAYMENT_API_END_POINTS[api_mode],
-            post_params: api_client.generate_mpg_params_20(
+            post_url: api_client.api_url_for(:mpg),
+            post_params: api_client.generate_mpg_params(
               normal_post_params.
                 merge(normal_payment_method_params)
             )
@@ -133,7 +137,7 @@ module OddPay
           NotifyURL: notify_url,
           CustomerURL: async_payment_url,
           ClientBackURL: back_url,
-          ExpireDate: nil # TODO:
+          ExpireDate: expire_date
         }.compact
       end
 
@@ -157,7 +161,15 @@ module OddPay
       end
 
       def expire_date
-        params[:expire_date]
+        date = params[:expire_date]
+        return unless date
+        case payment_type
+        when :cvs, :vacc, :barcode, :cvscom
+          # 藍新只能接受到日期參數，無法設定時段
+          date.in_time_zone.strftime('%Y%m%d')
+        else
+          nil
+        end
       end
 
       def email

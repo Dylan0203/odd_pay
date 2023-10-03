@@ -5,6 +5,7 @@ module OddPay
       InvalidNotificationError = Class.new(StandardError)
       FETCH_DATA_METHODS = %i(
         response_type
+        api_succeed
         message
         is_valid
         paid_at
@@ -20,6 +21,7 @@ module OddPay
 
         @build_information ||= {
           response_type: response_type,
+          api_succeed: api_succeed,
           message: message,
           is_valid: is_valid,
           paid_at: paid_at,

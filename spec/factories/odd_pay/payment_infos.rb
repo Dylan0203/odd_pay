@@ -12,6 +12,7 @@
 #  gateway_info          :jsonb
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  refund_state          :string
 #
 FactoryBot.define do
   factory :payment_info, class: 'OddPay::PaymentInfo' do
