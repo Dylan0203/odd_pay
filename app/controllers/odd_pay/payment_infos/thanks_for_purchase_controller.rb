@@ -15,7 +15,7 @@ module OddPay
         reference: :payment_notify
       )
 
-      @info = PaymentGatewayService.parse_notification(notification)
+      @info = notification.compose_info
 
       render :show
     end
