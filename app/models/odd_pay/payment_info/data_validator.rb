@@ -45,7 +45,7 @@ module OddPay
     end
 
     def unpaid_amount
-      @unpaid_amount ||= invoice.unpaid_amount
+      @unpaid_amount ||= invoice.unpaid_amount - invoice.reserved_amount
     end
 
     def amount

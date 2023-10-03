@@ -12,7 +12,7 @@
 #
 module OddPay
   class PaymentGateway < ApplicationRecord
-    has_many :payment_methods
+    has_many :payment_methods, dependent: :destroy
 
     validate { OddPay::PaymentGateway::DataValidator.new(self).validate }
 

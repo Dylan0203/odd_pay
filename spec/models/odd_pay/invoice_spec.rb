@@ -37,5 +37,6 @@ module OddPay
     it { should have_many(:payment_infos) }
     it { should have_many(:notifications).through(:payment_infos) }
     it { should have_many(:payments).through(:payment_infos) }
+    it { should have_many(:refunds).through(:payment_infos) }
   end
 end

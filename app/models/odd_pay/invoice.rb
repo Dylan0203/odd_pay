@@ -37,6 +37,7 @@ module OddPay
     has_many :payment_infos, dependent: :destroy
     has_many :notifications, through: :payment_infos
     has_many :payments, through: :payment_infos
+    has_many :refunds, through: :payment_infos
 
     scope :incomplete, -> { where(completed_at: nil) }
     scope :completed_already, -> { where.not(completed_at: nil) }
@@ -140,6 +141,23 @@ module OddPay
       subscription_info['grace_period_in_days'].to_i.days
     end
 
+    def subscription_duration
+      case period_type
+      when :days
+        period_point.days
+      when *%i(weeks months years)
+        1.send(period_type)
+      else
+        0.days
+      end
+    end
+
+    def expired?
+      return false unless subscription?
+      return true unless expired_at
+      Time.current >= (expired_at + grace_period_in_days)
+    end
+
     def available_payment_methods
       OddPay::PaymentMethod.where(
         # enabled: true,
@@ -147,8 +165,28 @@ module OddPay
       )
     end
 
+    def paid_amount
+      scope = payments
+
+      if subscription?
+        scope = scope.
+          where('expired_at > ?', Time.current.beginning_of_day).
+          order(paid_at: :desc).limit(1)
+      end
+
+      Money.new(scope.sum(:amount_cents))
+    end
+
     def unpaid_amount
-      amount - Money.new(payment_infos.paid.sum(:amount_cents))
+      amount - paid_amount
+    end
+
+    def reserved_amount
+      Money.new(payment_infos.waiting_async_payment.sum(:amount_cents))
+    end
+
+    def update_info
+      OddPay::PaymentGatewayService.update_invoice(self)
     end
 
     private

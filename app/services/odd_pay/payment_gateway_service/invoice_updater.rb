@@ -1,10 +1,9 @@
 module OddPay
   class PaymentGatewayService::InvoiceUpdater
-    attr_reader :invoice, :latest_payment_info
+    attr_reader :invoice # , :payments
 
     def initialize(invoice)
       @invoice = invoice
-      @latest_payment_info = invoice.payment_infos.last
     end
 
     def self.update(payment_info)
@@ -12,26 +11,46 @@ module OddPay
     end
 
     def update
-      case latest_payment_info.aasm_state.to_sym
-      when :paid
-        update_payment_state
-      when :overdue
-        invoice.expire! unless invoice.overdue?
-      when :canceled
-        invoice.cancel! unless invoice.canceled?
-      end
+      update_payment_state
+      update_shipment_state
     end
 
     def update_payment_state
-      balance = invoice.unpaid_amount
+      balance = invoice.amount - invoice.paid_amount
+
       case
       when balance.zero?
-        invoice.pay! unless invoice.paid?
+        pay_and_record_paid_at
       when balance > 0
-        invoice.balance_owe! unless invoice.balance_due?
+        balance_due_or_overdue
       when balance < 0
         invoice.credit_owe! unless invoice.credit_owed?
       end
     end
+
+    def pay_and_record_paid_at
+      last_payment = invoice.payments.last
+      last_paid_at = last_payment.paid_at
+
+      if invoice.paid_at != last_paid_at
+        invoice.assign_attributes(
+          paid_at: last_paid_at,
+          expired_at: last_payment.expired_at
+        )
+        invoice.pay!
+      end
+    end
+
+    def balance_due_or_overdue
+      if invoice.paid?
+        return unless invoice.expired?
+
+        invoice.expire! unless invoice.overdue?
+      else
+        invoice.balance_owe! unless invoice.balance_due?
+      end
+    end
+
+    def update_shipment_state; end
   end
 end
