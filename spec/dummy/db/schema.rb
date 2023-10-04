@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_10_03_092724) do
+ActiveRecord::Schema.define(version: 2023_10_04_072823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -113,6 +113,7 @@ ActiveRecord::Schema.define(version: 2023_10_03_092724) do
     t.datetime "expired_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["paid_at", "payment_info_id"], name: "index_odd_pay_payments_on_paid_at_and_payment_info_id", unique: true
     t.index ["payment_info_id"], name: "index_odd_pay_payments_on_payment_info_id"
   end
 
@@ -128,6 +129,7 @@ ActiveRecord::Schema.define(version: 2023_10_03_092724) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["payment_info_id"], name: "index_odd_pay_refunds_on_payment_info_id"
+    t.index ["refunded_at", "payment_info_id"], name: "index_odd_pay_refunds_on_refunded_at_and_payment_info_id", unique: true
   end
 
   create_table "odd_pay_uniform_invoice_credit_notes", force: :cascade do |t|
