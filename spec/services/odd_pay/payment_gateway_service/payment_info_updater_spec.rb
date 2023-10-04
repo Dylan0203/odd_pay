@@ -110,7 +110,7 @@ module OddPay
       describe 'refund_state' do
         context 'when refund is partially' do
           let!(:payment) { create :payment, amount: amount, payment_info: payment_info }
-          let!(:refund) { create :refund, amount: amount - 10, payment_info: payment_info, aasm_state: :done }
+          let!(:refund) { create :refund, amount: amount - 10, payment_info: payment_info, aasm_state: :done, refunded_at: Time.current }
 
           it 'will change state to partial_refunded' do
             subject.update
@@ -118,7 +118,7 @@ module OddPay
           end
 
           context 'if full another refund has create but not done' do
-            let!(:another_refund) { create :refund, amount: 10, payment_info: payment_info }
+            let!(:another_refund) { create :refund, amount: 10, payment_info: payment_info, refunded_at: Time.current }
 
             it 'will still be partial_refunded' do
               subject.update
