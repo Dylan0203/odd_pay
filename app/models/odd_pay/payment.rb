@@ -17,6 +17,8 @@ module OddPay
     has_one :invoice, through: :payment_info
     has_one :uniform_invoice
 
+    validates :paid_at, uniqueness: { scope: :payment_info_id }
+
     monetize :amount_cents
   end
 end
