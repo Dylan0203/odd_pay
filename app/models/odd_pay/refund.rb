@@ -20,6 +20,8 @@ module OddPay
 
     belongs_to :payment_info, touch: true
 
+    validates :refunded_at, uniqueness: { scope: :payment_info_id }
+
     monetize :amount_cents
 
     aasm do
