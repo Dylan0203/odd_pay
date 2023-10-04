@@ -10,7 +10,7 @@ module OddPay
 
     def create
       payment_info = PaymentInfo.find_by_hashid!(params[:payment_info_id])
-      notification = payment_info.notifications.create_or_find_by!(
+      notification = payment_info.notifications.find_or_create_by!(
         raw_data: request.POST,
         reference: :async_payment_notify
       )
