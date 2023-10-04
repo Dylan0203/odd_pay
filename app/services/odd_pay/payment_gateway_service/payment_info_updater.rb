@@ -66,7 +66,7 @@ module OddPay
     end
 
     def find_for_create_payment
-      payments.find_or_create_by!(
+      payments.create_or_find_by!(
         paid_at: paid_at,
         amount_cents: paid_amount.fractional
       )
@@ -91,7 +91,7 @@ module OddPay
     end
 
     def try_to_create_refund_record
-      payment_info.refunds.find_or_create_by!(
+      payment_info.refunds.create_or_find_by!(
         amount_cents: Money.from_amount(info[:amount].to_f).fractional,
         aasm_state: :done,
         refunded_at: latest_notification.created_at
