@@ -70,6 +70,10 @@ module OddPay
       new(notification).parse_notification
     end
 
+    def self.decode_data(notification)
+      new(notification).decode_data
+    end
+
     def self.update_payment_info(payment_info)
       OddPay::PaymentGatewayService::PaymentInfoUpdater.update(payment_info)
     end
@@ -108,6 +112,12 @@ module OddPay
       %Q(OddPay::#{gateway_provider}::NotificationUpdater).
         constantize.
         parse_notification(gateway_source)
+    end
+
+    def decode_data
+      %Q(OddPay::#{gateway_provider}::NotificationUpdater).
+        constantize.
+        decode_data(gateway_source)
     end
 
     def cancel_payment_info(amount)
