@@ -33,5 +33,14 @@ module OddPay
       alipay
       wechat_pay
     ).freeze
+
+    def self.parse_time(time_string, format: '%Y-%m-%d %H:%M:%S')
+      time_string.in_time_zone if time_string
+    rescue ArgumentError
+      DateTime.
+        strptime(time_string, format).
+        to_s(:db).
+        in_time_zone
+    end
   end
 end

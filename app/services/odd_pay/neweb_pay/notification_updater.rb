@@ -18,15 +18,19 @@ module OddPay
         new(notification).update
       end
 
+      def self.parse_notification(notification)
+        new(notification).build_information
+      end
+
+      def self.decode_data(notification)
+        new(notification).decode_data
+      end
+
       def update
         notification.update!(
           notify_type: build_information[:response_type],
           information: build_information
         )
-      end
-
-      def self.parse_notification(notification)
-        new(notification).build_information
       end
 
       def decode_data
@@ -98,11 +102,10 @@ module OddPay
       end
 
       def paid_at
-        Time.zone.parse(
+        OddPay::NewebPay.parse_time(
           decode_data.dig(:Result, :AuthTime) ||
             decode_data.dig(:Result, :AuthDate) ||
-            decode_data.dig(:Result, :PayTime) ||
-            ''
+            decode_data.dig(:Result, :PayTime)
         )
       end
 

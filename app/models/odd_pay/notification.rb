@@ -43,5 +43,9 @@ module OddPay
     def compose_info
       OddPay::PaymentGatewayService.parse_notification(self)
     end
+
+    def decode_data
+      OddPay::PaymentGatewayService.decode_data(self)
+    end
   end
 end
