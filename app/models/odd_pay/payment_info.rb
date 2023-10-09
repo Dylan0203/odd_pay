@@ -105,6 +105,13 @@ module OddPay
       OddPay::PaymentGatewayService.update_payment_info(self)
     end
 
+    def async_payment_info
+      notifications.
+        async_payment_info.
+        last.
+        try(:async_payment_info)
+    end
+
     private
 
     def ignore_checkout_and_processing_payment_infos
