@@ -32,8 +32,17 @@ module OddPay
 
     scope :has_notify_type, -> { where.not(notify_type: %i(init current_payment_info)) }
 
-    def is_waiting_async_payment_info
-      async_payment_info? && information['expired_at'].in_time_zone > Time.current
+    def async_payment_info
+      return unless async_payment_info?
+      expired_at = information['expired_at']
+      return unless expired_at.in_time_zone > Time.current
+
+      {
+        bank_code: information['bank_code'],
+        code_no: information['code_no'],
+        amount: information['amount'],
+        expired_at: expired_at
+      }
     end
 
     def update_info
