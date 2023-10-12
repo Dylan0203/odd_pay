@@ -56,19 +56,19 @@ module OddPay
       end
 
       def paid_at
-        decode_data['PaidAt']
+        decode_data['paid_at']
       end
 
       def card_no
-        decode_data['CardNo']
+        decode_data['card_no']
       end
 
       def auth_code
-        decode_data['AuthCode']
+        decode_data['auth_code']
       end
 
       def amount
-        decode_data["Amount"]
+        decode_data["amount"]
       end
 
       def original_info
@@ -76,15 +76,15 @@ module OddPay
       end
 
       def code_no
-        decode_data['CodeNo']
+        decode_data['code_no']
       end
 
       def bank_code
-        decode_data['BankCode']
+        decode_data['bank_code']
       end
 
       def expired_at
-        decode_data['ExpiredAt']
+        decode_data['expired_at']
       end
     end
   end
