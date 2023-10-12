@@ -41,6 +41,10 @@ module OddPay
 
     scope :incomplete, -> { where(completed_at: nil) }
     scope :completed_already, -> { where.not(completed_at: nil) }
+    scope :may_pay, -> {
+      completed.where(payment_state: [:checkout, :balance_due]).
+        or(completed.where(invoice_type: :subscription))
+    }
 
     enum invoice_type: {
       normal: 0,
