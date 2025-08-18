@@ -1,4 +1,4 @@
-class AdjustInvoiceColumns < ActiveRecord::Migration[6.1]
+class AdjustInvoiceColumns < ActiveRecord::Migration[7.0]
   def change
     rename_column :odd_pay_invoices, :billing_email, :email
     rename_column :odd_pay_invoices, :billing_phone, :contact_phone

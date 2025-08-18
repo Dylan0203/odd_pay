@@ -1,4 +1,4 @@
-class CreateOddPayUniformInvoiceCreditNotes < ActiveRecord::Migration[6.1]
+class CreateOddPayUniformInvoiceCreditNotes < ActiveRecord::Migration[7.0]
   def change
     create_table :odd_pay_uniform_invoice_credit_notes do |t|
       t.references :uniform_invoice,

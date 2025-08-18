@@ -1,4 +1,4 @@
-class CreateOddPayRefunds < ActiveRecord::Migration[6.1]
+class CreateOddPayRefunds < ActiveRecord::Migration[7.0]
   def change
     create_table :odd_pay_refunds do |t|
       t.references :payment_info, foreign_key: { to_table: 'odd_pay_payment_infos' }

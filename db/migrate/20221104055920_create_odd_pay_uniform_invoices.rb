@@ -1,4 +1,4 @@
-class CreateOddPayUniformInvoices < ActiveRecord::Migration[6.1]
+class CreateOddPayUniformInvoices < ActiveRecord::Migration[7.0]
   def change
     create_table :odd_pay_uniform_invoices do |t|
       t.references :payment, foreign_key: { to_table: 'odd_pay_payments' }

@@ -1,4 +1,4 @@
-class CreateOddPayUniformInvoiceGateways < ActiveRecord::Migration[6.1]
+class CreateOddPayUniformInvoiceGateways < ActiveRecord::Migration[7.0]
   def change
     create_table :odd_pay_uniform_invoice_gateways do |t|
       t.string :name

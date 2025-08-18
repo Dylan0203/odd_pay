@@ -1,4 +1,4 @@
-class CreateOddPayInvoiceItems < ActiveRecord::Migration[6.1]
+class CreateOddPayInvoiceItems < ActiveRecord::Migration[7.0]
   def change
     remove_column :odd_pay_invoices, :payable_id, :bigint
     remove_column :odd_pay_invoices, :payable_type, :string
