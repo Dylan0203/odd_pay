@@ -1,4 +1,4 @@
-class CreateOddPayPaymentMethods < ActiveRecord::Migration[6.1]
+class CreateOddPayPaymentMethods < ActiveRecord::Migration[7.0]
   def change
     create_table :odd_pay_payment_methods do |t|
       t.references :payment_gateway, foreign_key: { to_table: 'odd_pay_payment_gateways' }

@@ -1,4 +1,4 @@
-class CreateOddPayInvoices < ActiveRecord::Migration[6.1]
+class CreateOddPayInvoices < ActiveRecord::Migration[7.0]
   def change
     create_table :odd_pay_invoices do |t|
       t.references :buyer, polymorphic: true
