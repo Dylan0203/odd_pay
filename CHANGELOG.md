@@ -2,9 +2,9 @@
 
 All notable changes to this project are documented in this file.
 
-Entries below start at 1.1.0; earlier releases predate this file and are not backfilled.
+Entries below start at 0.2.0; earlier releases predate this file and are not backfilled.
 
-## [1.1.0] - 2026-07-26
+## [0.2.0] - 2026-07-26
 
 ### Changed
 
