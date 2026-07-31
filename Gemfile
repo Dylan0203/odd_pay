@@ -7,7 +7,13 @@ gemspec
 gem 'aasm'
 gem 'money-rails'
 gem 'pg'
-gem 'spgateway_payment_and_invoice_client', github: 'oracle-design/spgateway_payment_and_invoice', tag: '1.0.8'
+# Fork, not oracle-design: 1.0.9 and 1.0.10 replace `URI.encode` / `URI.decode`,
+# both removed in Ruby 3.0. odd_pay itself only uses `Spgateway::ClientV2`, which
+# neither release touches — this pin exists so odd_pay's development environment
+# resolves the same gem source its consumers do. Upstream is read-only for us;
+# move back to oracle-design once
+# https://github.com/oracle-design/spgateway_payment_and_invoice/pull/7 merges.
+gem 'spgateway_payment_and_invoice_client', github: 'Dylan0203/spgateway_payment_and_invoice', tag: '1.0.10'
 gem 'hashids'
 # Rails 6.1's `rails` meta-gem pulled this in implicitly; Rails 7 dropped that implicit
 # dependency, and spec/dummy/config/application.rb requires 'sprockets/railtie' directly.
